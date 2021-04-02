@@ -1,0 +1,46 @@
+div.Accueil
+{
+    position: relative;
+    font-family: Arial;
+    /* background-color: rgba(138, 74, 176, 0.1); */
+}
+div.corps
+{
+    margin: 70px 10%;
+    display: flex;
+    justify-content: space-evenly;
+}
+#formConnexion
+{
+    background-color: whitesmoke;
+    box-shadow: 1px 10px 20px black;
+    border-radius: 10px;
+    width: 230px;
+}
+#formConnexion input, #inscription
+{
+    font-size: medium;
+    width: 200px;
+    margin: 10px 5px 15px 5px;
+    border-radius: 5px;
+    outline: 0;
+}
+.calendrier
+{
+    border-radius: 20px;
+    box-shadow: 1px 10px 20px black;
+}
+a#pwdforgot
+{
+    font-size: small;
+}
+.formulaire
+{
+    text-align: center;
+}
+.divInscription
+{
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid black;
+}

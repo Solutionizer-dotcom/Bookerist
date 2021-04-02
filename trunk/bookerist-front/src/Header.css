@@ -1,0 +1,9 @@
+h1#titreHeader
+{
+    text-align: center;
+    color: rgb(138, 74, 176);
+}
+img.logo:hover
+{
+    cursor: pointer;
+}

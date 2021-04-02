@@ -1,0 +1,45 @@
+.Inscription
+{
+    color: rgb(138, 74, 176);
+    /* background-color: rgba(138, 74, 176, 0.1); */
+    padding-bottom: 100%;
+}
+.formInscription fieldset
+{
+    border: unset;
+    box-shadow: 0px 0px 10px black;
+    border-radius: 20px;
+    width: 600px;
+    height: 500px;
+    margin: auto;
+    background-color: white;
+}
+.formInscription h2
+{
+    font-size: 1.5em;
+    margin: 20px auto 45px auto;
+    /* margin-left: auto;
+    margin-right: auto; */
+}
+.formInscription
+{
+    text-align: center;
+}
+.formInscription input, #goIscription
+{
+    display: block;
+    margin: 20px auto 5px auto;
+    width: 200px;
+    font-size: medium;
+    border-radius: 5px;
+    outline: 0;
+}
+#goInscription
+{
+    margin-top: 100px;
+    background-color: rgb(138, 74, 176);
+    color: white;
+    border-radius: 5px;
+    border: none;
+    padding: 5px 10px;
+}

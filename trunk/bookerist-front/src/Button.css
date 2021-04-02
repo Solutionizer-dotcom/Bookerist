@@ -1,0 +1,18 @@
+#connect, #inscription, #goInscription
+{
+    background-color: rgb(138, 74, 176);
+    color: white;
+    border-radius: 5px;
+    border: none;
+    padding: 5px 10px;
+}
+#connect:hover, #inscription:hover, #goInscription:hover
+{
+    background-color: #9575cd;
+    cursor: pointer;
+}
+#connect:active, #inscription:active, #goInscription:active
+{
+    width: 160px;
+    box-shadow: 1px 1px 5px inset black;
+}
