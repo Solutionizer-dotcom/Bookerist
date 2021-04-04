@@ -1,7 +1,7 @@
 import './Inscription.css'
 import React, { Component } from 'react'
 import reactDom from 'react-dom'
-import Accueil from './Accueil'
+import App from './App'
 import './Button.css'
 
 class Inscription extends Component {
@@ -18,6 +18,10 @@ class Inscription extends Component {
     handleMailUpdate = event => {
         //automatiquement mettre le mail en minuscules
         this.setState({ mail: event.target.value.toLowerCase() })
+    }
+
+    handleInscriptionFinished = () => {
+        this.props.handlePage(true, false, false);
     }
 
     //fonction en fleche afin de pouvoir acceder au bon this
@@ -46,18 +50,21 @@ class Inscription extends Component {
                 },
                 body: JSON.stringify(user)
             })
-            .then(res => res.json())
+            .then(res => res.json().then(response => ({status: res.status, data: response})))
             .then(res => {
-                console.log(res.message);
-                alert("Inscription correctement effectuée !");
-                reactDom.render(
-                    <Accueil />,
-                    document.getElementById('root')
-                );
+                alert(res.data.message);
+                if (res.status === 201){
+                    this.handleInscriptionFinished();
+                    reactDom.render(
+                        <App />,
+                        document.getElementById('root')
+                    );
+                }
             })
             .catch(err => {
-                alert("Un problème est survenu lors de la connexion à la base de donnée. ")
-            })
+                // alert("Un problème est survenu lors de la connexion à la base de donnée. ")
+                console.log(err);
+            });
         }
     }
 

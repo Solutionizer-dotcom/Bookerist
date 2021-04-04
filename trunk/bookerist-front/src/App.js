@@ -61,7 +61,8 @@ class App extends Component {
         <div>
         <Header 
         handlePage={this.handlePage} />
-        <Inscription />
+        <Inscription 
+        handlePage={this.handlePage} />
         </div>
       );
     }
