@@ -29,6 +29,11 @@ class App extends Component {
     }
   }
 
+  componentDidUpdate(){
+    window.localStorage.setItem('userInfos', JSON.stringify(this.state));
+    //console.log(this.state);
+  }
+
   setNameAndMail = (name, mail) => {
     this.setState({ name: name, mail: mail});
   }
@@ -38,21 +43,18 @@ class App extends Component {
   }
 
   handlePage = ({inAccueil, inInscription, inForgotPass}) => {
-    if (inAccueil){
-      this.setState({inAccueil, inInscription: false, inForgotPass: false});
-    }
-    else if (inInscription){
-      this.setState({inAccueil: false, inInscription, inForgotPass: false});
-    }
-    else{
-      this.setState({inAccueil: false, inInscription: false, inForgotPass});
-    }
-    
+    // if (inAccueil){
+    //   this.setState({inAccueil, inInscription: false, inForgotPass: false});
+    // }
+    // else if (inInscription){
+    //   this.setState({inAccueil: false, inInscription, inForgotPass: false});
+    // }
+    // else{
+    //   this.setState({inAccueil: false, inInscription: false, inForgotPass});
+    // }
+    this.setState(inAccueil, inInscription, inForgotPass);
   }
-  componentDidUpdate(){
-    window.localStorage.setItem('userInfos', JSON.stringify(this.state));
-    //console.log(this.state);
-  }
+  
   render(){
     const loggedIn = this.state.loggedIn;
     const inInscription = this.state.inInscription;
@@ -68,7 +70,8 @@ class App extends Component {
     }
     return (
           <div className="main">
-            {loggedIn
+            {
+            loggedIn
             ?(
             <div className="accLoggedIn">
               <HeaderLoggedIn 
@@ -80,7 +83,8 @@ class App extends Component {
               name={this.state.name}
               mail={this.state.name}
               handleLoginChange={this.handleLoginChange} />
-            </div>)
+            </div>
+            )
             :(
             <div className="Accueil">
               <Header 
@@ -89,7 +93,8 @@ class App extends Component {
               setNameAndMail={this.setNameAndMail}
               handleLoginChange={this.handleLoginChange}
               handlePage={this.handlePage} />
-            </div>)
+            </div>
+            )
             }
           </div>
     );

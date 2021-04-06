@@ -11,16 +11,4 @@ const ForgotPass = ()=>{
     );
 
 }
-export default ForgotPass; 
-
-
-
-
-
-
-
-
-
-
-
- 
+export default ForgotPass;

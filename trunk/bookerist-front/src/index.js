@@ -1,13 +1,15 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import App from './App';
+import HeaderLoggedIn from './HeaderLoggedIn';
 import reportWebVitals from './reportWebVitals'
 //import Accueil from './Accueil'
 
 
 ReactDOM.render(
   <div>
-    <App />
+    {/* <App /> */}
+    <HeaderLoggedIn />
   </div>,
   document.getElementById('root')
 );
