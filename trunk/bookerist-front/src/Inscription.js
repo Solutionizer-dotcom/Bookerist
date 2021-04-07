@@ -5,7 +5,14 @@ import App from './App'
 import './Button.css'
 
 class Inscription extends Component {
-    state = { nom: '', prenom: '', mail: '', mail2: '', mdp: '', mdp2: ''}
+    state = {
+        nom: '',
+        prenom: '',
+        mail: '',
+        mail2: '',
+        mdp: '',
+        mdp2: ''
+    }
 
     //fx fleche pour acceder au this
     saveChanges = event => {
@@ -70,36 +77,36 @@ class Inscription extends Component {
 
     render() {    
         return (
-                <div className="Inscription">
-                    <form className="formInscription" name="formInscription" onSubmit={this.sendInscription}>
-                        <fieldset>
-                            <h2>Inscription</h2>
+            <div className="Inscription">
+                <form className="formInscription" name="formInscription" onSubmit={this.sendInscription}>
+                    <fieldset>
+                        <h2>Inscription</h2>
 
-                            <input type="text" id="nom" name="nom" placeholder="NOM" required
-                            onChange={this.saveChanges} />
+                        <input type="text" id="nom" name="nom" placeholder="NOM" required
+                        onChange={this.saveChanges} />
 
-                            <input type="text" id="prenom" name="prenom" placeholder="Prénom" required
-                            onChange={this.saveChanges} />
+                        <input type="text" id="prenom" name="prenom" placeholder="Prénom" required
+                        onChange={this.saveChanges} />
 
-                            <input type="email" id="mail" name="mail" placeholder="e-mail" required
-                            onChange={this.handleMailUpdate}
-                            value={this.state.mail} />
+                        <input type="email" id="mail" name="mail" placeholder="e-mail" required
+                        onChange={this.handleMailUpdate}
+                        value={this.state.mail} />
 
-                            <input type="email" id="mail2" name="mail2" placeholder="confirmer e-mail" required 
-                            onChange={this.saveChanges} />
+                        <input type="email" id="mail2" name="mail2" placeholder="confirmer e-mail" required 
+                        onChange={this.saveChanges} />
 
-                            <input type="password" id="mdp" name="mdp" placeholder="mot de passe" required
-                            onChange={this.saveChanges} />
+                        <input type="password" id="mdp" name="mdp" placeholder="mot de passe" required
+                        onChange={this.saveChanges} />
 
-                            <input type="password" id="confirmMdp" name="mdp2" placeholder="confirmer mot de passe" required
-                            onChange={this.saveChanges} />
+                        <input type="password" id="confirmMdp" name="mdp2" placeholder="confirmer mot de passe" required
+                        onChange={this.saveChanges} />
 
-                            <input type="submit" id="goInscription" value="Je m'inscris !" />
+                        <input type="submit" id="goInscription" value="Je m'inscris !" />
 
-                        </fieldset>
-                    </form>
-                </div>
-            );
+                    </fieldset>
+                </form>
+            </div>
+        );
     }
 }
 

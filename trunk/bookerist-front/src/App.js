@@ -5,6 +5,7 @@ import Header from './Header';
 import HeaderLoggedIn from './HeaderLoggedIn';
 import Inscription from './Inscription';
 import React, { Component } from 'react';
+import Agenda from './AccueilLoggedIn'
 
 class App extends Component {
   constructor(props){
@@ -35,26 +36,31 @@ class App extends Component {
   }
 
   setNameAndMail = (name, mail) => {
-    this.setState({ name: name, mail: mail});
+    this.setState({ name: name, mail: mail });
   }
 
   handleLoginChange = (loggedIn) => {
+    console.log("login changed: " + loggedIn);
     this.setState({ loggedIn });
   }
 
   handlePage = ({inAccueil, inInscription, inForgotPass}) => {
-    // if (inAccueil){
-    //   this.setState({inAccueil, inInscription: false, inForgotPass: false});
-    // }
-    // else if (inInscription){
-    //   this.setState({inAccueil: false, inInscription, inForgotPass: false});
-    // }
-    // else{
-    //   this.setState({inAccueil: false, inInscription: false, inForgotPass});
-    // }
-    this.setState(inAccueil, inInscription, inForgotPass);
+    if (inAccueil){
+      this.setState({inAccueil, inInscription: false, inForgotPass: false});
+    }
+    else if (inInscription){
+      this.setState({inAccueil: false, inInscription, inForgotPass: false});
+    }
+    else{
+      this.setState({inAccueil: false, inInscription: false, inForgotPass});
+    }
+    // this.setState(inAccueil, inInscription, inForgotPass);
   }
   
+  componentWillUnmount() {
+    window.localStorage.removeItem('userInfos');
+  }
+
   render(){
     const loggedIn = this.state.loggedIn;
     const inInscription = this.state.inInscription;
@@ -76,13 +82,15 @@ class App extends Component {
             <div className="accLoggedIn">
               <HeaderLoggedIn 
               handlePage={this.handlePage}
-              handleLoginChange={this.handleLoginChange}
+              handleDisconnect={() => this.handleLoginChange(false)}
               name={this.state.name}
-              mail={this.state.name}/>
-              <AccueilLoggedIn
+              mail={this.state.mail}/>
+
+              <Agenda />
+              {/* <AccueilLoggedIn
               name={this.state.name}
               mail={this.state.name}
-              handleLoginChange={this.handleLoginChange} />
+              handleLoginChange={this.handleLoginChange} /> */}
             </div>
             )
             :(

@@ -65,8 +65,9 @@ const compareMdp = async (mdp, hash) => {
 app.post('/connect', async (req, res, next) => {
     User.findOne({ mail: req.body.mail })
     .then(async user => {
-        if (user.length == null)
+        if (user == null){
             res.status(400).json({ message: 'Utilisateur introuvable.'})
+        }
         else {
             const mdpIsValid = await compareMdp(req.body.mdp, user.mdp);
             res.status(`${mdpIsValid ? 200 : 400}`).json({ message: `${mdpIsValid ? 'Connexion réussie' : 'Mot de passe incorrect'}`, name: user.nom, mail: user.mail});

@@ -15,7 +15,7 @@ class Accueil extends Component {
     }
 
     gotoInscription = () =>{
-        this.props.handlePage({inInscription: true});
+        this.props.handlePage({ inInscription: true });
     }
 
     saveChanges = event => {

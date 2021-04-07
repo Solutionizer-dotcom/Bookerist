@@ -3,13 +3,15 @@ import ReactDOM from 'react-dom'
 import App from './App';
 import HeaderLoggedIn from './HeaderLoggedIn';
 import reportWebVitals from './reportWebVitals'
+//import Test from './Test';
+import Header from './Header'
 //import Accueil from './Accueil'
-
+import Inscription from './Inscription';
 
 ReactDOM.render(
   <div>
-    {/* <App /> */}
-    <HeaderLoggedIn />
+    <App />
+    {/* <HeaderLoggedIn name="Yanis" mail="mail@mail.fr"/> */}
   </div>,
   document.getElementById('root')
 );

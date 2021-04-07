@@ -1,4 +1,4 @@
-#connect, #inscription, #goInscription
+#connect, #inscription, #goInscription, .bouton_contact
 {
     background-color: rgb(138, 74, 176);
     color: white;
@@ -6,12 +6,12 @@
     border: none;
     padding: 5px 10px;
 }
-#connect:hover, #inscription:hover, #goInscription:hover
+#connect:hover, #inscription:hover, #goInscription:hover, .bouton_contact:hover
 {
     background-color: #9575cd;
     cursor: pointer;
 }
-#connect:active, #inscription:active, #goInscription:active
+#connect:active, #inscription:active, #goInscription:active, .bouton_contact:active
 {
     width: 160px;
     box-shadow: 1px 1px 5px inset black;

@@ -1,0 +1,35 @@
+div#corps_contact
+{
+    text-align: center;
+    border: 1px black solid;
+    margin: 2% auto;
+    width: 50%;
+    border-radius: 20px;
+    background-color: whitesmoke;
+}
+
+h2#titre_contact
+{
+    color:rgb(138, 74, 176);
+    font-size: 50px;
+}
+
+label#label
+{
+    color:rgb(138, 74, 176);
+    font-size: 25px;
+}
+
+textarea#message
+{
+    border-radius: 20px;
+    width: 80%;
+    height: 400px;
+    outline: 0;
+}
+
+.bouton_contact
+{
+    width: 200px;
+    margin: 5px;
+}

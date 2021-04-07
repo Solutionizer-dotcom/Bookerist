@@ -1,4 +1,25 @@
-img.logo:hover
+img.logoLoggedIn:hover
 {
     cursor: pointer;
+}
+img.logoLoggedIn
+{
+    position: absolute;
+    left: 50%;
+    right: 50%;
+}
+header.headerLoggedIn
+{
+    display: flex;
+}
+#menuProfil
+{
+    position: absolute;
+    right: 0%;
+    margin-right: 2px;
+    text-align: right;
+}
+.choices
+{
+    display: block;
 }
