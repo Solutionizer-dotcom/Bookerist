@@ -40,17 +40,12 @@ export default function HeaderLoggedIn(props) {
     });
   }
 
-function handleSettings(){
-  console.log("settings");
-}
-
   function handleDisconnect (e) {
     e.preventDefault();
     e.stopPropagation();
-    //on supprime les données cache de l'utilisateur puis on le déconnecte
-    window.localStorage.removeItem('userInfos');
-    window.localStorage.removeItem('contactSent');
 
+    //on supprime les données sauvegardées en local de l'utilisateur puis on le déconnecte
+    localStorage.clear();
     props.disconnect();
   }
 
@@ -66,7 +61,6 @@ function handleSettings(){
     e.stopPropagation();
     const page = e.target.name;
     const pageName = `in${page}`
-    console.log(pageName);
     setState(false);
     props.handlePage({ [pageName]: true });
   }

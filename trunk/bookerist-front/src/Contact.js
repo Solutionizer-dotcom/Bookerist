@@ -39,7 +39,7 @@ export default function Contact(props){
     function handleSubmitMessage(e){
         e.preventDefault();
 
-        const alreadySent = window.localStorage.getItem('contactSent');
+        const alreadySent = JSON.parse(window.localStorage.getItem('contactSent'));
         //on vérifie d'abord que l'utilisateur n'a pas encore envoyé de message pour éviter les spams.
         if (alreadySent !== null && alreadySent.sentContact === true){
             alert("Vous avez déjà envoyé un message de contact.");
@@ -77,7 +77,7 @@ export default function Contact(props){
             compteur_objet: max.objet,
             compteur_message: max.message,
         });
-        window.localStorage.setItem('contactSent', {sentContact: true});
+        window.localStorage.setItem('contactSent', JSON.stringify({ sentContact: true }));
         props.gotoMain();
     }
 

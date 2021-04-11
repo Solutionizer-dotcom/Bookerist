@@ -44,35 +44,33 @@ class App extends Component {
   }
 
   handleLoginChange = (loggedIn) => {
-    console.log("login changed: " + loggedIn);
     this.setState({ loggedIn });
+    if (!loggedIn){
+      this.handlePage({ inAccueil: true });
+    }
   }
 
-  handlePage = ({inAccueil, inInscription, inForgotPass, inContact}) => {
-    if (inAccueil){
-      this.setState({inAccueil, inInscription: false, inForgotPass: false, inContact: false });
-    }
-    else if (inInscription){
-      this.setState({inAccueil: false, inInscription, inForgotPass: false, inContact: false });
-    }
-    else if (inContact){
-      this.setState({inAccueil: false, inInscription: false, inForgotPass: false, inContact });
-    }
-    else if (inForgotPass){
-      this.setState({inAccueil: false, inInscription: false, inForgotPass, inContact: false });
-    }
-    // this.setState(inAccueil, inInscription, inForgotPass);
+  handlePage = (page) => {
+
+    //on remet d'abord tous les etats a false avant de mettre l'argument passé a la fonction a true
+    this.setState({
+      inAccueil: false,
+      inInscription: false,
+      inForgotPass: false,
+      inContact: false,
+    });
+
+    this.setState(page);
   }
   
   componentWillUnmount() {
-    window.localStorage.removeItem('userInfos');
-    window.localStorage.removeItem('contactSent');
+    localStorage.clear();
   }
 
   render(){
     // const loggedIn = this.state.loggedIn;
     // const inInscription = this.state.inInscription;
-    const {nom, prenom, mail, loggedIn, inAccueil, inInscription, inContact, inForgotPass} = this.state;
+    const { nom, prenom, mail, loggedIn, inAccueil, inInscription, inForgotPass, inContact } = this.state;
     let header = null;
     let page = null;
 

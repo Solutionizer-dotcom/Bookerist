@@ -48,7 +48,8 @@ class Accueil extends Component {
         })
          .then(response => response.json().then(res => ({ status: response.status, data: res })))
          .then(res => {
-            //alert(res.data.message);
+             if (res.status === 400)
+                alert(res.data.message);
             if (res.status === 200)
                 //console.log(res.data.name);
                 this.handleCanBeLogged(res.data.prenom, res.data.nom, res.data.mail);
