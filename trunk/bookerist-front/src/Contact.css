@@ -1,11 +1,11 @@
 div#corps_contact
 {
     text-align: center;
-    border: 1px black solid;
     margin: 2% auto;
     width: 50%;
     border-radius: 20px;
     background-color: whitesmoke;
+    box-shadow: 1px 5px 20px black;
 }
 
 h2#titre_contact
@@ -14,22 +14,64 @@ h2#titre_contact
     font-size: 50px;
 }
 
-label#label
+p.txtMessage
 {
     color:rgb(138, 74, 176);
-    font-size: 25px;
+    font-size: 20px;
 }
-
+textarea#objet
+{
+    position: relative;
+    margin: auto;
+    right: -5px;
+    border: solid black 1px;
+    border-bottom: none;
+    border-radius: 5px 5px 0px 0px;
+    width: 80%;
+    height: 1em;
+    outline: 0;
+    padding: 5px;
+    resize: none;
+}
 textarea#message
 {
-    border-radius: 20px;
+    position: relative;
+    margin: auto;
+    top: -3px;
+    right: -10px;
+    border: solid black 1px;
+    border-radius: 0px 0px 5px 5px;
     width: 80%;
     height: 400px;
     outline: 0;
+    padding: 5px;
+    resize: none;
 }
-
+span#compteurObjet
+{
+    font-size: x-small;
+    width: 1em;
+    padding-top: 10px;
+    opacity: 50%;
+    position: relative;
+    right: 9.5%;
+}
+span#compteurMessage
+{
+    font-size: x-small;
+    width: 2em;
+    padding-top: 395px;
+    opacity: 50%;
+    position: relative;
+    right: 9.6%;
+    margin: 0;
+}
 .bouton_contact
 {
     width: 200px;
     margin: 5px;
+}
+.divObjet, .divMessage
+{
+    display: flex;
 }

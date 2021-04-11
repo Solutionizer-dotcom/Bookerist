@@ -1,7 +1,16 @@
-const express = require('express');
-const mongoose = require('mongoose');
+const express = require('express'); //serveur express
+const mongoose = require('mongoose'); //utilitaire pour mongodb
+const bcrypt = require('bcrypt'); //pour hasher les mdp
+require('dotenv').config(); //pour utiliser un fichier .env au lieu d'écrire dans app les identifiants et mdp
+
+const nodemailer = require('nodemailer'); //pour envoyer des mails
+const { google } = require('googleapis'); //pour communiquer avec api google (pour envoi de mails)
+
+const oAuth2Client = new google.auth.OAuth2(process.env.OAUTH_CLIENT_ID, process.env.OAUTH_CLIENT_SECRET, process.env.OAUTH_REDIRECT_URI);
+oAuth2Client.setCredentials({ refresh_token: process.env.OAUTH_REFRESH_TOKEN });
+
+//modèles de la BDD
 const User = require('./models/User');
-const bcrypt = require('bcrypt');
 
 //Connexion à la base de donnée MongoDB
 mongoose.connect('mongodb+srv://bzalugas:Bookerist2021@cluster0.cjrzx.mongodb.net/Solutionzer?retryWrites=true&w=majority',
@@ -21,6 +30,18 @@ app.use((req, res, next) => {
   });
 
 app.use(express.json());
+
+//Fonction de comparaison de mots de passe (utilisée pour connexion)
+const compareMdp = async (mdp, hash) => {
+    try{
+        //comparaison des mdp
+        return await bcrypt.compare(mdp, hash);
+    } catch (error) {
+        console.log(error);
+    }
+    //retourne false si erreur
+    return false;
+}
 
 //Envoi des infos inscription dans la BDD
 app.post('/inscription',  async (req, res, next) => {
@@ -49,18 +70,6 @@ app.post('/inscription',  async (req, res, next) => {
     .catch(err => res.status(400).json({ err }));
 });
 
-//Fonction de comparaison de mots de passe (utilisée pour connexion)
-const compareMdp = async (mdp, hash) => {
-    try{
-        //comparaison des mdp
-        return await bcrypt.compare(mdp, hash);
-    } catch (error) {
-        console.log(error);
-    }
-    //retourne false si erreur
-    return false;
-}
-
 //Vérification des identifiants pour connexion
 app.post('/connect', async (req, res, next) => {
     User.findOne({ mail: req.body.mail })
@@ -70,10 +79,61 @@ app.post('/connect', async (req, res, next) => {
         }
         else {
             const mdpIsValid = await compareMdp(req.body.mdp, user.mdp);
-            res.status(`${mdpIsValid ? 200 : 400}`).json({ message: `${mdpIsValid ? 'Connexion réussie' : 'Mot de passe incorrect'}`, name: user.nom, mail: user.mail});
+            res.status(`${mdpIsValid ? 200 : 400}`).json({ message: `${mdpIsValid ? 'Connexion réussie' : 'Mot de passe incorrect'}`, prenom: user.prenom, nom: user.nom, mail: user.mail});
         }
     })
     .catch(err => res.status(400).json({ message: err }));
+})
+
+//Fonction d'envoi de mail
+async function sendMail({from, to, objet, message}) { 
+    try{
+        const accessToken = await oAuth2Client.getAccessToken();
+
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                type: 'OAuth2',
+                user: process.env.MAIL_USERNAME,
+                clientId: process.env.OAUTH_CLIENT_ID,
+                clientSecret: process.env.OAUTH_CLIENT_SECRET,
+                refreshToken: process.env.OAUTH_REFRESH_TOKEN,
+                accessToken: accessToken,
+            }
+        });
+
+        const mailOptions = {
+            from: from,
+            to: to,
+            subject: objet,
+            text: message,
+        }
+
+        const result = await transporter.sendMail(mailOptions);
+        return result;
+    } catch(error){
+        return error;
+    }
+}
+
+//Envoi du message de l'utilisateur depuis la page contact
+app.post('/contact', (req, res, next) => {
+    const options = {
+        from: req.body.prenom + " " + req.body.nom + ' <' + req.body.mail + '>', //le mail sera quand même celui utilisé pour l'envoi mais les nom et prénoms figureront dans l'expéditeur
+        to: process.env.MAIL_USERNAME,
+        objet: 'CONTACT FROM ' + req.body.prenom + " " + req.body.nom + ' <' + req.body.mail + '> - ' + req.body.objet,
+        message: req.body.message,
+    }
+    sendMail(options)
+    .then((result) => {
+        console.log('mail envoyé : ', result);
+        res.status(200).json({ message: 'Message bien envoyé. Nous vous répondrons dans les plus brefs délais.' });
+    })
+    .catch((error) => {
+        console.log('erreur : ', error.message);
+        res.json({ message: "Erreur lors de l'envoi du message." });
+    });
+
 })
 
 module.exports = app;

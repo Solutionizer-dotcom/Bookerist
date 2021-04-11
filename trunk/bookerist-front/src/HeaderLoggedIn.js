@@ -1,188 +1,138 @@
 import './HeaderLoggedIn.css';
 import './Button.css';
-import reactDom from 'react-dom';
 import logo from './logo.png';
-import App from './App';
-import React, { useState } from 'react';
-import Button from '@material-ui/core/Button';
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
-import Grow from '@material-ui/core/Grow';
-import Paper from '@material-ui/core/Paper';
-import Popper from '@material-ui/core/Popper';
-import MenuItem from '@material-ui/core/MenuItem';
-import MenuList from '@material-ui/core/MenuList';
-import { makeStyles } from '@material-ui/core/styles';
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-  },
-  paper: {
-    marginRight: theme.spacing(2),
-  },
-}));
+import React, { useEffect, useState } from 'react';
 
 export default function HeaderLoggedIn(props) {
-  const classes = useStyles();
-  const [open, setOpen] = React.useState(false);
-  const anchorRef = React.useRef(null);
-  const [profilOpen, setProfilOpen] = useState(false);
+  const [state, setState] = useState({
+    menuOpen: false,
+    profilOpen: false,
+  });
 
-  const handleToggle = () => {
-    setOpen((prevOpen) => !prevOpen);
-  };
-
-  const handleClose = (event) => {
-    if (anchorRef.current && anchorRef.current.contains(event.target)) {
-      return;
+  //A chaque fois que le state est modifié, on vérifie si on clique en dehors du menu
+  useEffect(() => {
+    if (state.profilOpen){
+      window.addEventListener('click', toggleProfil);
     }
-
-    setOpen(false);
-  };
-
-  function handleListKeyDown(event) {
-    if (event.key === 'Tab') {
-      event.preventDefault();
-      setOpen(false);
+    return function (){
+      window.removeEventListener('click', toggleProfil);
     }
-  }
+  }, [state]);
 
-  // return focus to the button when we transitioned from !open -> open
-  const prevOpen = React.useRef(open);
-  React.useEffect(() => {
-    if (prevOpen.current === true && open === false) {
-      anchorRef.current.focus();
+  useEffect(() => {
+    if (state.menuOpen){
+      window.addEventListener('click', toggleMenu);
     }
+    return function (){
+      window.removeEventListener('click', toggleMenu);
+    }
+  }, [state]);
 
-    prevOpen.current = open;
-  }, [open]);
-
-  function toggleProfil () {
-    setProfilOpen((profilOpen) => !profilOpen);
+  function toggleProfil (event) {
+    event.preventDefault();
+    event.stopPropagation();
+    setState((state) => {
+        return {
+          ...state,
+          profilOpen: !state.profilOpen,
+          menuOpen: state.menuOpen
+        };
+    });
   }
 
-  function handleDisconnect () {
-    props.handleDisconnect();
+function handleSettings(){
+  console.log("settings");
+}
+
+  function handleDisconnect (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    //on supprime les données cache de l'utilisateur puis on le déconnecte
+    window.localStorage.removeItem('userInfos');
+    window.localStorage.removeItem('contactSent');
+
+    props.disconnect();
   }
 
-  function handleGotoMain() {
-    props.handlePage({ inAccueil: true });
+  function handleGotoMain(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    props.gotoMain();
+    setState(false);
   }
 
+  function handlePageMenu(e){
+    e.preventDefault();
+    e.stopPropagation();
+    const page = e.target.name;
+    const pageName = `in${page}`
+    console.log(pageName);
+    setState(false);
+    props.handlePage({ [pageName]: true });
+  }
+
+  function toggleMenu(event){
+    event.preventDefault();
+    event.stopPropagation();
+    setState(state => {
+      return {
+        ...state,
+        menuOpen: !state.menuOpen,
+      }
+    })
+  }
   return (
     <header className="headerLoggedIn">
-    {/* <div className={classes.root}> */}
-      <div>
-        <Button
-          ref={anchorRef}
-          aria-controls={open ? 'menu-list-grow' : undefined}
-          aria-haspopup="true"
-          onClick={handleToggle}
-        >
-          Menu
-        </Button>
-        <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
-          {({ TransitionProps, placement }) => (
-            <Grow
-              {...TransitionProps}
-              style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
-            >
-              <Paper>
-                <ClickAwayListener onClickAway={handleClose}>
-                  <MenuList autoFocusItem={open} id="menu-list-grow" onKeyDown={handleListKeyDown}>
-                      <MenuItem onClick={handleClose}>Accueil</MenuItem>
-                      <MenuItem onClick={handleClose}>Ajout créneau</MenuItem>
-                      <MenuItem onClick={handleClose}>Prendre rendez-vous</MenuItem>
-                      <MenuItem onClick={handleClose}>Ajout évènement</MenuItem>
-                      <MenuItem onClick={handleClose}>Manuel d'utilisation</MenuItem>
-                      <MenuItem onClick={handleClose}>Contact</MenuItem>
-                  </MenuList>
-                </ClickAwayListener>
-              </Paper>
-            </Grow>
-          )}
-        </Popper>
-      </div>
 
-      <img className="logoLoggedIn" src={logo} alt="logo" height="32" width="32" onClick={handleGotoMain} />
+      <img id="logoLoggedIn" src={logo} alt="logo" width="32" height="32"
+      onClick={handleGotoMain} />
 
-      <div id="menuProfil">
-        <button id="profil" onClick={toggleProfil}>{props.name} ({props.mail})</button>
-        { profilOpen
-        ? (
-          <div className="choices">
-        <button className="profilChoix" onClick={handleDisconnect}>Se déconnecter</button>
-        </div>
-        )
-        : (null)
-      }
-      </div>
+      <ul className="menu">
+          <li id="liMenu">
+            <a href='none' onClick={toggleMenu}>MENU</a>
+              {state.menuOpen
+              ? (
+                <ul id="choixMenu">
+                  <li>
+                    <a href='none' onClick={handleGotoMain}>Accueil</a>
+                  </li>
+                  <li>      
+                    <a href='none' name="Creneau" onClick={handlePageMenu}>Ajout créneau</a>
+                  </li>
+                  <li>
+                    <a href='none' name="Rdv" onClick={handlePageMenu}>Prendre rendez-vous</a>
+                  </li>        
+                  <li>
+                    <a href='none' name="Event" onClick={handlePageMenu}>Créer évènement</a>
+                  </li>
+                  <li>
+                    <a href='none' name="Manuel" onClick={handlePageMenu}>Manuel d'utilisation</a>
+                  </li>
+                  <li>
+                    <a href='none' name="Contact" onClick={handlePageMenu}>Contact</a>
+                  </li>        
+                </ul>
+              )
+              : (null)
+              }
+          </li>
+          <li id="liProfil">
+            <a href="none" onClick={toggleProfil}>{props.prenom.toUpperCase()} ({props.mail})</a>
+            {state.profilOpen
+            ? (
+              <ul id="choixProfil">
+              <li>
+                <a href="none" name="Settings" onClick={handlePageMenu}>Paramètres</a>
+              </li>
+              <li>
+                <a href="none" onClick={handleDisconnect}>Se déconnecter</a>
+              </li>
+            </ul>
+            )
+            : (null)
+            }
+          </li>
+        </ul>
     </header>
   );
 }
-
-//     toggleMenu(e) {
-//         e.preventDefault();
-//         this.setState(state => ({
-//             showMenu: !state.showMenu
-//         }))
-//     }
-//     handleDisconnect = () => {
-//         this.props.handleLoginChange(false);
-//     }
-
-//     render(){
-//         return (
-//             <header className="header">
-//                 <button 
-//                 onClick={this.toggleMenu}
-//                 className="menu"
-//                 >
-//                     Menu
-//                 </button>
-                
-//             {
-//                 this.state.showMenu
-//                 ? (
-//                     <div className="windowMenu">
-//                         <button 
-//                         className="listMenu"
-//                         >
-//                             Ajout créneau
-//                         </button>
-
-//                         <button
-//                         className="listMenu"
-//                         >Prendre rendez-vous
-//                         </button>
-
-//                         <button
-//                         className="listMenu"
-//                         >Ajout évènement
-//                         </button>
-
-//                         <button
-//                         className="listMenu"
-//                         >Manuel d'utilisation
-//                         </button>
-                        
-//                         <button
-//                         className="listMenu"
-//                         >Contact
-//                         </button>
-//                     </div>
-//                 )
-//                 : (null)
-//             }
-
-//             {/* <button onClick={this.handleDisconnect}>
-//                 Se déconnecter
-//             </button>
-                
-//             <img className="logo" src={logo} alt="logo" height="32" width="32" onClick={() => reactDom.render(<App />, document.getElementById('root'))}/> */}
-//             </header>
-//         );
-//     }
-// }
-
-// export default HeaderLoggedIn;

@@ -1,25 +1,88 @@
-img.logoLoggedIn:hover
+img#logoLoggedIn:hover
 {
     cursor: pointer;
 }
-img.logoLoggedIn
+img#logoLoggedIn
 {
-    position: absolute;
-    left: 50%;
+    position: fixed;
     right: 50%;
+    left: 50%;
 }
-header.headerLoggedIn
+.menu
 {
     display: flex;
+    flex-direction: row;
 }
-#menuProfil
+.menu li
 {
-    position: absolute;
-    right: 0%;
-    margin-right: 2px;
-    text-align: right;
+    list-style: none;
+    text-align: center;
 }
-.choices
+.menu li a
 {
+    font-size: small;
+    text-decoration: none;
+    color:rgb(138, 74, 176);
+    margin: 5px;
     display: block;
+    border-radius: 5px;
+    padding: 10px;
+}
+.menu li ul
+{
+    text-align: center;
+    padding: 5px;
+    background-color: whitesmoke;
+    border-radius: 5px;
+    position: relative;
+    top: -5px;
+}
+#choixMenu
+{
+    animation: openMenu .5s;
+}
+#choixProfil
+{
+    animation: openProfil .5s;
+}
+.menu li a:hover
+{
+    background-color: rgba(138, 74, 176,0.5);
+    transition: background-color .5s;
+}
+li#liProfil
+{
+    position: fixed;
+    right: 1%;
+}
+li#liMenu
+{
+    position: fixed;
+    left: 1%;
+    width: 15%
+}
+
+@keyframes openMenu {
+    from{
+      transform: translateY(-50px);
+        transform:translateX(-50px);
+      opacity: 0;
+    }
+    to {
+        transform: translateY(0px);
+        transform:translateX(0px);
+        opacity: 100;
+    }
+}
+@keyframes openProfil {
+    from{
+      transform: translateY(-50px);
+        transform:translateX(50px);
+      opacity: 0;
+    }
+    to {
+        transform: translateY(0px);
+        transform:translateX(0px);
+        opacity: 100;
+    }
 }

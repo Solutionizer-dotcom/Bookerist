@@ -5,13 +5,19 @@ import App from './App'
 import './Button.css'
 
 class Inscription extends Component {
-    state = {
-        nom: '',
-        prenom: '',
-        mail: '',
-        mail2: '',
-        mdp: '',
-        mdp2: ''
+    constructor(props){
+        super(props);
+
+        this.state = {
+            nom: '',
+            prenom: '',
+            mail: '',
+            mail2: '',
+            mdp: '',
+            mdp2: ''
+        }
+
+        this.baseURL = "http://localhost:3001";
     }
 
     //fx fleche pour acceder au this
@@ -28,7 +34,7 @@ class Inscription extends Component {
     }
 
     handleInscriptionFinished = () => {
-        this.props.handlePage(true, false, false);
+        this.props.gotoMain();
     }
 
     //fonction en fleche afin de pouvoir acceder au bon this
@@ -50,7 +56,7 @@ class Inscription extends Component {
                 mail: mail,
                 mdp: mdp
             };
-            fetch("http://localhost:3001/inscription", {
+            fetch(this.baseURL + "/inscription", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

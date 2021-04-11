@@ -16,3 +16,6 @@ sketch
 
 ### svn ###
 .svn
+
+### dotenv package ###
+.env

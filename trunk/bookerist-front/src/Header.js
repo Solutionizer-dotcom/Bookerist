@@ -3,7 +3,7 @@ import './Header.css';
 
 const Header = (props) => {
     const handleGotoMain = () => {
-        props.handlePage(true, false, false);
+        props.gotoMain();
     }
     return (
         <header className="header">

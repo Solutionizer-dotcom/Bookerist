@@ -1,17 +1,18 @@
 import React, {Component} from 'react';
 import './Accueil.css';
-// import reactDom from 'react-dom';
-// import Inscription from './Inscription';
-import Calendrier from './Calendrier';
 import './Button.css';
+//import Calendrier from './Calendrier';
 
 class Accueil extends Component {
     constructor(props){
         super(props);
+
         this.state = {
             mail: '', 
             mdp: ''
         };
+
+        this.baseURL = "http://localhost:3001";
     }
 
     gotoInscription = () =>{
@@ -25,18 +26,20 @@ class Accueil extends Component {
         this.setState({ [name]: value })
     }
 
-    handleCanBeLogged = (name, mail) => {
-        this.props.setNameAndMail(name, mail);
-        this.props.handleLoginChange(true);
+    handleCanBeLogged = (prenom, nom, mail) => {
+        this.props.setUserInfos(prenom, nom, mail);
+        this.props.connect();
     }
 
     handleConnexion = event => {
         event.preventDefault();
+
         let user = {
             mail: this.state.mail,
             mdp: this.state.mdp
         }
-        fetch("http://localhost:3001/connect", {
+
+        fetch(this.baseURL + "/connect", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -45,10 +48,10 @@ class Accueil extends Component {
         })
          .then(response => response.json().then(res => ({ status: response.status, data: res })))
          .then(res => {
-            alert(res.data.message);
+            //alert(res.data.message);
             if (res.status === 200)
                 //console.log(res.data.name);
-                this.handleCanBeLogged(res.data.name, res.data.mail);
+                this.handleCanBeLogged(res.data.prenom, res.data.nom, res.data.mail);
         })
         .catch(err => {
             alert("Erreur : " + err);
@@ -56,7 +59,6 @@ class Accueil extends Component {
     }
 
     render() {
-        //const loggedIn = this.props.loggedIn;
         return (
                 <div className="corps">
 
@@ -79,9 +81,9 @@ class Accueil extends Component {
                         </form>
                     </div>
 
-                    <div className="calendrier">
+                    {/* <div className="calendrier">
                         <Calendrier />
-                    </div>
+                    </div> */}
                 </div>
         );
     }
