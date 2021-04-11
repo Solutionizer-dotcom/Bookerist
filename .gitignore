@@ -18,4 +18,4 @@ sketch
 .svn
 
 ### dotenv package ###
-.env
+#.env
