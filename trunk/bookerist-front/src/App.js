@@ -8,19 +8,27 @@ import React, { Component } from 'react';
 //import Agenda from './AccueilLoggedIn';
 import Contact from './Contact';
 import ForgotPass from './ForgotPass';
+import Calendrier from './Calendrier';
 
 class App extends Component {
   constructor(props){
     super(props);
+
     this.state = ({
+
+      menuOpened: false,
+      profilOpened: false,
+
       prenom: '',
       nom: '',
       mail: '',
+
       loggedIn: false,
       inAccueil: true,
       inInscription: false,
       inForgotPass: false,
-      inContact: false,
+      inContact: false,      
+      
     });
   }
 
@@ -28,19 +36,18 @@ class App extends Component {
   componentDidMount() {
     let user = window.localStorage.getItem('userInfos');
     if (user != null){
-      //console.log("user: ", user);
       user = JSON.parse(user);
       this.setState(user);
     }
   }
 
-  componentDidUpdate(){
-    window.localStorage.setItem('userInfos', JSON.stringify(this.state));
-    //console.log(this.state);
+  componentDidUpdate() {
+    let user = this.state;
+    window.localStorage.setItem('userInfos', JSON.stringify(user));
   }
 
   setUserInfos = (prenom, nom, mail) => {
-    this.setState({ prenom: prenom, nom: nom, mail: mail });
+    this.setState({ prenom, nom, mail });
   }
 
   handleLoginChange = (loggedIn) => {
@@ -50,26 +57,39 @@ class App extends Component {
     }
   }
 
-  handlePage = (page) => {
+  handlePage = (pages) => {
+    //tableau contenant toutes les props éventuelles de pages
+    const tab = ["inAccueil", "inInscription", "inForgotPass", "inContact"];
+    
+    //on boucle sur les valeurs de l'objet pages. Si la prop est undefined, on la met a false:
+    //ça permet de pouvoir passer en argument seulement la page qu'on veut changer.
+    //on modifie l'état directement dans la boucle
+    for(let prop of tab){
+      pages[prop] = pages[prop] == undefined ? false : pages[prop];
+      this.setState({ [prop]: pages[prop] });
+    }
+  }
 
-    //on remet d'abord tous les etats a false avant de mettre l'argument passé a la fonction a true
-    this.setState({
-      inAccueil: false,
-      inInscription: false,
-      inForgotPass: false,
-      inContact: false,
-    });
-
-    this.setState(page);
+  //Fonction pour partager l'état du menu entre la page et le header
+  handleMenusAccueil = (menuState) => {
+    //comme pour handlePage on fait un tableau pour modifier facilement le cas échéant
+    //la boucle permet de ne jamais ouvrir les deux menus en même temps
+    const tab = ["menuOpened", "profilOpened"];
+    for(let prop of tab){
+      menuState[prop] = menuState[prop] == undefined ? false : menuState[prop];
+      this.setState({ [prop]: menuState[prop] });
+    }
+    console.log("App, toggleMenu");
   }
   
-  componentWillUnmount() {
-    localStorage.clear();
-  }
+  // componentWillUnmount() {
+  //   localStorage.clear();
+  // }
 
   render(){
     // const loggedIn = this.state.loggedIn;
     // const inInscription = this.state.inInscription;
+    
     const { nom, prenom, mail, loggedIn, inAccueil, inInscription, inForgotPass, inContact } = this.state;
     let header = null;
     let page = null;
@@ -81,7 +101,9 @@ class App extends Component {
     mail={mail}
     disconnect={() => this.handleLoginChange(false)}
     gotoMain={() => this.handlePage({ inAccueil: true })}
-    handlePage={this.handlePage} />
+    handlePage={this.handlePage}
+    handleMenus={this.handleMenusAccueil}
+    />
     )
     : header = (
     <Header 
@@ -92,7 +114,10 @@ class App extends Component {
       loggedIn
       ? page = (
       <AccueilLoggedIn
+      menuOpened={this.state.menuOpened}
+      profilOpened={this.state.profilOpened}
        />
+      // <Calendrier />
       )
       : page = (
       <Accueil 
@@ -121,7 +146,6 @@ class App extends Component {
         gotoMain={() => this.handlePage({ inAccueil: true })} />
       );
     }
-    
     
 
     return(

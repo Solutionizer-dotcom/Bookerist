@@ -8,10 +8,12 @@ import App from './App';
 // import Accueil from './Accueil'
 // import Inscription from './Inscription';
 // import Contact from './Contact';
+// import ForgotPass from './ForgotPass';
+// import Parametre from './Parametre'
 
 ReactDOM.render(
   <div>
-    <App />
+    <App />   
   </div>,
   document.getElementById('root')
 );
@@ -19,4 +21,4 @@ ReactDOM.render(
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+//reportWebVitals();

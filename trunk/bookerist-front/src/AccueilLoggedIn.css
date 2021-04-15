@@ -1,2 +1,33 @@
 @import '~react-agenda/build/styles.css';
 @import '~react-datetime/css/react-datetime.css';
+#accLoggedIn
+{
+    margin-top: 80px;
+    padding: 5px;
+}
+#accLoggedIn.menuOpened
+{
+    animation: whenMenuOpens 1s forwards;
+}
+#accLoggedIn.profilOpened
+{
+    animation: whenProfilOpens 1s forwards;
+}
+
+@keyframes whenMenuOpens {
+    from{
+        transform:translateX(0px);
+    }
+    to {
+        transform:translateX(210px);
+    }
+}
+
+@keyframes whenProfilOpens {
+    from{
+        transform:translateX(0px);
+    }
+    to {
+        transform:translateX(-150px);
+    }
+}

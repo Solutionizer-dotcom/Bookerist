@@ -5,38 +5,61 @@ import React, { useEffect, useState } from 'react';
 
 export default function HeaderLoggedIn(props) {
   const [state, setState] = useState({
-    menuOpen: false,
-    profilOpen: false,
+    menuOpened: false,
+    profilOpened: false,
   });
 
-  //A chaque fois que le state est modifié, on vérifie si on clique en dehors du menu
+  
+  //A chaque fois que le state est modifié et qu'un menu est ouvert, on vérifie si on clique en dehors du menu
   useEffect(() => {
-    if (state.profilOpen){
-      window.addEventListener('click', toggleProfil);
+    function handleCloseMenus(){
+      props.handleMenus({ menuOpened: false, profilOpened: false});
+      setState({
+        ...state,
+        menuOpened: false,
+        profilOpened: false,
+      });
+
+    }
+
+    if (state.profilOpened || state.menuOpened){
+      window.addEventListener('click', handleCloseMenus);
     }
     return function (){
-      window.removeEventListener('click', toggleProfil);
+      window.removeEventListener('click', handleCloseMenus);
     }
   }, [state]);
 
-  useEffect(() => {
-    if (state.menuOpen){
-      window.addEventListener('click', toggleMenu);
-    }
-    return function (){
-      window.removeEventListener('click', toggleMenu);
-    }
-  }, [state]);
+  // useEffect(() => {
+  //   if (state.menuOpened){
+  //     window.addEventListener('click', toggleMenu);
+  //   }
+  //   return function (){
+  //     window.removeEventListener('click', toggleMenu);
+  //   }
+  // }, [state.menuOpened]);
 
   function toggleProfil (event) {
     event.preventDefault();
     event.stopPropagation();
-    setState((state) => {
+    props.handleMenus({ profilOpened : !state.profilOpened })
+    setState(state => {
         return {
           ...state,
-          profilOpen: !state.profilOpen,
-          menuOpen: state.menuOpen
-        };
+          profilOpened: !state.profilOpened,
+        }
+      });
+  }
+
+  function toggleMenu(event){
+    event.preventDefault();
+    event.stopPropagation();
+    props.handleMenus({ menuOpened: !state.menuOpened });
+    setState(state => {
+      return {
+        ...state,
+        menuOpened: !state.menuOpened,
+      }
     });
   }
 
@@ -45,7 +68,7 @@ export default function HeaderLoggedIn(props) {
     e.stopPropagation();
 
     //on supprime les données sauvegardées en local de l'utilisateur puis on le déconnecte
-    localStorage.clear();
+    // localStorage.clear();
     props.disconnect();
   }
 
@@ -65,16 +88,8 @@ export default function HeaderLoggedIn(props) {
     props.handlePage({ [pageName]: true });
   }
 
-  function toggleMenu(event){
-    event.preventDefault();
-    event.stopPropagation();
-    setState(state => {
-      return {
-        ...state,
-        menuOpen: !state.menuOpen,
-      }
-    })
-  }
+  console.log("Header, menuOpened : " + state.menuOpened);
+  console.log("Header, profilOpened : " + state.profilOpened);
   return (
     <header className="headerLoggedIn">
 
@@ -84,11 +99,11 @@ export default function HeaderLoggedIn(props) {
       <ul className="menu">
           <li id="liMenu">
             <a href='none' onClick={toggleMenu}>MENU</a>
-              {state.menuOpen
+              {state.menuOpened
               ? (
                 <ul id="choixMenu">
                   <li>
-                    <a href='none' onClick={handleGotoMain}>Accueil</a>
+                    <a href='none' name="Accueil" onClick={handlePageMenu}>Accueil</a>
                   </li>
                   <li>      
                     <a href='none' name="Creneau" onClick={handlePageMenu}>Ajout créneau</a>
@@ -112,7 +127,7 @@ export default function HeaderLoggedIn(props) {
           </li>
           <li id="liProfil">
             <a href="none" onClick={toggleProfil}>{props.prenom.toUpperCase()} ({props.mail})</a>
-            {state.profilOpen
+            {state.profilOpened
             ? (
               <ul id="choixProfil">
               <li>

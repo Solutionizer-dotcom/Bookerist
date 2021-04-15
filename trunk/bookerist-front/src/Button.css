@@ -2,7 +2,7 @@ button:hover
 {
     cursor:pointer;
 }
-#connect, #inscription, #goInscription, .bouton_contact
+#connect, #inscription, #goInscription, .bouton_contact, .bouton_forgotPass, .bouton_modifier
 {
     background-color: rgb(138, 74, 176);
     color: white;
@@ -11,12 +11,12 @@ button:hover
     padding: 5px 10px;
     transition: background-color 0.5s;
 }
-#connect:hover, #inscription:hover, #goInscription:hover, .bouton_contact:hover
+#connect:hover, #inscription:hover, #goInscription:hover, .bouton_contact:hover, .bouton_forgotPass:hover, .bouton_modifier:hover
 {
     background-color: #9575cd;
     cursor: pointer;
 }
-#connect:active, #inscription:active, #goInscription:active, .bouton_contact:active
+#connect:active, #inscription:active, #goInscription:active, .bouton_contact:active, .bouton_forgotPass:active, .bouton_modifier:active
 {
     width: 160px;
     box-shadow: 1px 1px 5px inset black;

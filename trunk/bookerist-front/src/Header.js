@@ -7,8 +7,8 @@ const Header = (props) => {
     }
     return (
         <header className="header">
-                <img className="logo" src={logo} alt="logo" height="32" width="32" onClick={handleGotoMain}/>
-                <h1 id="titreHeader">BOOKERIST</h1>
+            <img className="logo" src={logo} alt="logo" height="32" width="32" onClick={handleGotoMain}/>
+            <h1 id="titreHeader">BOOKERIST</h1>
         </header>
     )
 }

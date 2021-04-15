@@ -1,0 +1,52 @@
+div.parametre
+{
+    text-align: center;
+    position: relative;
+    margin-top: 50px;
+    margin: 2% auto;
+    width: 40%;
+    border-radius: 20px;
+    background-color: whitesmoke;
+    box-shadow: 1px 5px 20px black;
+    padding: 2%;
+}
+
+.inputParam
+{
+    font-size: 20px;
+    position: relative;
+    margin-top: 10px;
+    pointer-events: none;
+    background-color: #e0e0e0;
+}
+
+.bouton_modifier
+{
+    width: 200px;
+    position: relative;
+    margin-top: 10px;
+    font-size: 1em;
+}
+
+.bouton_modifier#save
+{
+    position: relative;
+    margin-top: 100px;
+}
+
+.inputParamPass
+{
+    font-size: 20px;
+    position: relative;
+    margin-top: 20px;
+    pointer-events: none;
+    background-color: #e0e0e0;
+}
+
+.bouton_modifier#modifMdp
+{
+    position: relative;
+    margin-top: 50px;
+    width: 200px;
+}
+

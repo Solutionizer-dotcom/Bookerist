@@ -11,13 +11,14 @@ oAuth2Client.setCredentials({ refresh_token: process.env.OAUTH_REFRESH_TOKEN });
 
 //modèles de la BDD
 const User = require('./models/User');
+const AgendaEvent = require('./models/AgendaEvent');
 
 //Connexion à la base de donnée MongoDB
 mongoose.connect('mongodb+srv://bzalugas:Bookerist2021@cluster0.cjrzx.mongodb.net/Solutionzer?retryWrites=true&w=majority',
     { useNewUrlParser: true,
     useUnifiedTopology: true })
     .then(() => console.log('Connexion à MongoDB réussie.'))
-    .catch(() => console.log('Connexion à MongoDB échouée.'));
+    .catch((error) => console.log('Connexion à MongoDB échouée : ', error));
 
     const app = express();
 
@@ -134,6 +135,30 @@ app.post('/contact', (req, res, next) => {
         res.json({ message: "Erreur lors de l'envoi du message." });
     });
 
+
+    //Envoi des données d'event depuis l'agenda
+    app.post('/event/save', (req, res, next) => {
+        const event = new AgendaEvent({...req.body});
+        AgendaEvent.save()
+        .then(res => res.status(200).json({ message: "event saved" }))
+        .catch(error => res.status(400).json({ message: error }));
+    });
+
+    app.get('/events/get', (req, res, next) => {
+        AgendaEvent.find()
+        .then(events => res.status(200).json(events))
+        .catch(error => res.status(400).json({ message: error }));
+    });
+
+})
+
+app.post('/forgotPass', (req,res,next)=>{
+    const options = {
+        from: 'Bookerist <solutionizer.bookerist@gmail.com>',
+        to: req.body.mail,
+        objet: 'Réinitialisation du mot de passe Bookerist',
+        message: 'Bonjour, voici votre nouveau mot de passe : ' + mdp
+    }
 })
 
 module.exports = app;

@@ -1,14 +1,60 @@
+import React, { useState } from "react"
+import Header from "./Header" 
+import "./ForgotPass.css"  
+const baseURL="http://localhost:3001/";
 
-import React from "react"
-import Header from "./Header"
 const ForgotPass = ()=>{
-    return(
-        <div className="forgotPass">
-        <Header />
+    const [mail, setMail] = useState('');
 
-        <h1>Bonjour</h1>
+    function saveChanges(event){
+        setMail(event.target.value.toLowerCase())
+    }
+
+    function handleForgetPass(event){
+        event.preventDefault()
+        fetch(baseURL+'/forgotPass',{ 
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(mail)
+        })
+    }
+
+    return(
+        <div>
+            <Header/>
+        <div className="forgotPass">
+            <h2>Mot de passe oublié </h2>
+            <form id="formulaireMDP" onSubmit={handleForgetPass}>
+            <br/>
+            <input type="email" id="mailForgotPass" name="mailForgotPass" placeholder="e-mail" 
+            onChange={saveChanges} 
+            value={mail}
+            required/>
+            <br/>
+            <input className="bouton_forgotPass" type="submit" value="Envoyer"></input>
+            </form>
+        </div>
         </div>
     );
 
 }
-export default ForgotPass;
+export default ForgotPass; 
+
+
+
+        
+  
+
+
+
+
+
+
+
+
+
+
+
+ 
