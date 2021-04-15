@@ -138,15 +138,19 @@ app.post('/contact', (req, res, next) => {
 
     //Envoi des données d'event depuis l'agenda
     app.post('/event/save', (req, res, next) => {
-        const event = new AgendaEvent({...req.body});
-        AgendaEvent.save()
+        const event = new AgendaEvent({...req.body}); //changer model
+        event.save()
         .then(res => res.status(200).json({ message: "event saved" }))
         .catch(error => res.status(400).json({ message: error }));
     });
 
     app.get('/events/get', (req, res, next) => {
-        AgendaEvent.find()
-        .then(events => res.status(200).json(events))
+        AgendaEvent.find() //changer le model
+        .then(events => {
+            if (events.length > 0){
+                res.status(200).json({events})
+            }
+        })
         .catch(error => res.status(400).json({ message: error }));
     });
 

@@ -65,7 +65,7 @@ class App extends Component {
     //ça permet de pouvoir passer en argument seulement la page qu'on veut changer.
     //on modifie l'état directement dans la boucle
     for(let prop of tab){
-      pages[prop] = pages[prop] == undefined ? false : pages[prop];
+      pages[prop] = pages[prop] === undefined ? false : pages[prop];
       this.setState({ [prop]: pages[prop] });
     }
   }
@@ -76,10 +76,9 @@ class App extends Component {
     //la boucle permet de ne jamais ouvrir les deux menus en même temps
     const tab = ["menuOpened", "profilOpened"];
     for(let prop of tab){
-      menuState[prop] = menuState[prop] == undefined ? false : menuState[prop];
+      menuState[prop] = menuState[prop] === undefined ? false : menuState[prop];
       this.setState({ [prop]: menuState[prop] });
     }
-    console.log("App, toggleMenu");
   }
   
   // componentWillUnmount() {

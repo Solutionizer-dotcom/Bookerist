@@ -9,7 +9,7 @@ export default function HeaderLoggedIn(props) {
     profilOpened: false,
   });
 
-  
+  // const {handleMenus} = props.handleMenus();
   //A chaque fois que le state est modifié et qu'un menu est ouvert, on vérifie si on clique en dehors du menu
   useEffect(() => {
     function handleCloseMenus(){
@@ -28,7 +28,7 @@ export default function HeaderLoggedIn(props) {
     return function (){
       window.removeEventListener('click', handleCloseMenus);
     }
-  }, [state]);
+  });
 
   // useEffect(() => {
   //   if (state.menuOpened){
@@ -88,8 +88,6 @@ export default function HeaderLoggedIn(props) {
     props.handlePage({ [pageName]: true });
   }
 
-  console.log("Header, menuOpened : " + state.menuOpened);
-  console.log("Header, profilOpened : " + state.profilOpened);
   return (
     <header className="headerLoggedIn">
 
