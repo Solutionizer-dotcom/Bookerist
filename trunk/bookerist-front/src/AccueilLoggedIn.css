@@ -1,7 +1,8 @@
 #accLoggedIn
 {
-    margin-top: 80px;
-    padding: 5px;
+    max-height: 70vh;
+    margin: 80px 3% auto 3%;
+    display: flex;
 }
 #accLoggedIn.menuOpened
 {
@@ -17,7 +18,7 @@
         transform:translateX(0px);
     }
     to {
-        transform:translateX(210px);
+        transform:translateX(100px);
     }
 }
 
@@ -26,6 +27,6 @@
         transform:translateX(0px);
     }
     to {
-        transform:translateX(-150px);
+        transform:translateX(-130px);
     }
 }

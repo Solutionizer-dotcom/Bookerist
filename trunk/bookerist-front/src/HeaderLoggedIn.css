@@ -4,14 +4,24 @@ img#logoLoggedIn:hover
 }
 img#logoLoggedIn
 {
+    display: block;
+}
+header.headerLoggedIn
+{
+    width: 99%;
     position: fixed;
-    right: 50%;
-    left: 50%;
+    top: 1%;
+    right: 1%;
+    left: 1%;
 }
 .menu
 {
+    width: 100%;
+    margin-left: 0;
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
+    padding-inline-start: 0;
 }
 .menu li
 {
@@ -39,49 +49,37 @@ img#logoLoggedIn
 }
 #choixMenu
 {
-    animation: openMenu .5s;
+    animation: openMenu 1s;
 }
 #choixProfil
 {
-    animation: openProfil .5s;
+    animation: openProfil 1s;
 }
 .menu li a:hover
 {
     background-color: rgba(138, 74, 176,0.5);
     transition: background-color .5s;
 }
-li#liProfil
-{
-    position: fixed;
-    right: 1%;
-}
 li#liMenu
 {
-    position: fixed;
-    left: 1%;
-    width: 15%
+    width: 150px;
 }
-
 @keyframes openMenu {
     from{
-      transform: translateY(-50px);
-        transform:translateX(-50px);
-      opacity: 0;
+        transform:translateX(-150px);
+        opacity: 0;
     }
     to {
-        transform: translateY(0px);
         transform:translateX(0px);
         opacity: 100;
     }
 }
 @keyframes openProfil {
     from{
-      transform: translateY(-50px);
-        transform:translateX(50px);
-      opacity: 0;
+        transform:translateX(150px);
+        opacity: 0;
     }
     to {
-        transform: translateY(0px);
         transform:translateX(0px);
         opacity: 100;
     }

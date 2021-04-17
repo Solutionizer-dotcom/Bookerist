@@ -50,10 +50,29 @@ class App extends Component {
     this.setState({ prenom, nom, mail });
   }
 
+  clearState = () => {
+    this.setState({
+      menuOpened: false,
+      profilOpened: false,
+
+      prenom: '',
+      nom: '',
+      mail: '',
+
+      loggedIn: false,
+      inAccueil: true,
+      inInscription: false,
+      inForgotPass: false,
+      inContact: false,  
+    })
+  }
+
   handleLoginChange = (loggedIn) => {
     this.setState({ loggedIn });
     if (!loggedIn){
-      this.handlePage({ inAccueil: true });
+      localStorage.clear();
+      this.clearState();
+      // this.handlePage({ inAccueil: true });
     }
   }
 
@@ -81,9 +100,9 @@ class App extends Component {
     }
   }
   
-  // componentWillUnmount() {
-  //   localStorage.clear();
-  // }
+  componentWillUnmount() {
+    localStorage.clear();
+  }
 
   render(){
     // const loggedIn = this.state.loggedIn;
@@ -153,53 +172,6 @@ class App extends Component {
         {page}
       </div>
     );
-
-
-
-
-
-    // if(inInscription){
-    //   return (
-    //     <div>
-    //     <Header 
-    //     handlePage={this.handlePage} />
-    //     <Inscription 
-    //     handlePage={this.handlePage} />
-    //     </div>
-    //   );
-    // }
-    // return (
-    //       <div className="main">
-    //         {
-    //         loggedIn
-    //         ?(
-    //         <div className="accLoggedIn">
-    //           <HeaderLoggedIn 
-    //           handlePage={this.handlePage}
-    //           handleDisconnect={() => this.handleLoginChange(false)}
-    //           nom={this.state.nom}
-    //           mail={this.state.mail}/>
-
-    //           <Agenda />
-    //           {/* <AccueilLoggedIn
-    //           name={this.state.name}
-    //           mail={this.state.name}
-    //           handleLoginChange={this.handleLoginChange} /> */}
-    //         </div>
-    //         )
-    //         :(
-    //         <div className="Accueil">
-    //           <Header 
-    //           handlePage={this.handlePage} />
-    //           <Accueil
-    //           setUserInfos={this.setUserInfos}
-    //           handleLoginChange={this.handleLoginChange}
-    //           handlePage={this.handlePage} />
-    //         </div>
-    //         )
-    //         }
-    //       </div>
-    // );
   }
 }
 

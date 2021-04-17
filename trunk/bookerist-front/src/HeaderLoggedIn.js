@@ -68,7 +68,7 @@ export default function HeaderLoggedIn(props) {
     e.stopPropagation();
 
     //on supprime les données sauvegardées en local de l'utilisateur puis on le déconnecte
-    // localStorage.clear();
+    localStorage.clear();
     props.disconnect();
   }
 
@@ -91,8 +91,7 @@ export default function HeaderLoggedIn(props) {
   return (
     <header className="headerLoggedIn">
 
-      <img id="logoLoggedIn" src={logo} alt="logo" width="32" height="32"
-      onClick={handleGotoMain} />
+      
 
       <ul className="menu">
           <li id="liMenu">
@@ -122,6 +121,10 @@ export default function HeaderLoggedIn(props) {
               )
               : (null)
               }
+          </li>
+          <li>
+            <img id="logoLoggedIn" src={logo} alt="logo" width="32" height="32"
+            onClick={handleGotoMain} />
           </li>
           <li id="liProfil">
             <a href="none" onClick={toggleProfil}>{props.prenom.toUpperCase()} ({props.mail})</a>

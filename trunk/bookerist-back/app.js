@@ -11,7 +11,7 @@ oAuth2Client.setCredentials({ refresh_token: process.env.OAUTH_REFRESH_TOKEN });
 
 //modèles de la BDD
 const User = require('./models/User');
-const AgendaEvent = require('./models/AgendaEvent');
+// const AgendaEvent = require('./models/AgendaEvent');
 
 //Connexion à la base de donnée MongoDB
 mongoose.connect('mongodb+srv://bzalugas:Bookerist2021@cluster0.cjrzx.mongodb.net/Solutionzer?retryWrites=true&w=majority',
