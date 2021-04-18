@@ -8,7 +8,8 @@ import React, { Component } from 'react';
 //import Agenda from './AccueilLoggedIn';
 import Contact from './Contact';
 import ForgotPass from './ForgotPass';
-import Calendrier from './Calendrier';
+// import Calendrier from './Calendrier';
+import Parametre from './Parametre';
 
 class App extends Component {
   constructor(props){
@@ -27,7 +28,8 @@ class App extends Component {
       inAccueil: true,
       inInscription: false,
       inForgotPass: false,
-      inContact: false,      
+      inContact: false,
+      inParams: false,      
       
     });
   }
@@ -66,7 +68,8 @@ class App extends Component {
       inAccueil: true,
       inInscription: false,
       inForgotPass: false,
-      inContact: false,  
+      inContact: false,
+      inParams: false, 
     })
   }
 
@@ -83,7 +86,7 @@ class App extends Component {
   //Fonction qui gère le changement de pages
   handlePage = (pages) => {
     //tableau contenant toutes les props éventuelles de pages
-    const tab = ["inAccueil", "inInscription", "inForgotPass", "inContact"];
+    const tab = ["inAccueil", "inInscription", "inForgotPass", "inContact", "inParams"];
     
     //on boucle sur les valeurs de l'objet pages. Si la prop est undefined, on la met a false:
     //ça permet de pouvoir passer en argument seulement la page qu'on veut changer.
@@ -114,7 +117,7 @@ class App extends Component {
     // const loggedIn = this.state.loggedIn;
     // const inInscription = this.state.inInscription;
     
-    const { nom, prenom, mail, loggedIn, inAccueil, inInscription, inForgotPass, inContact } = this.state;
+    const { nom, prenom, mail, loggedIn, inAccueil, inInscription, inForgotPass, inContact, inParams } = this.state;
     let header = null;
     let page = null;
 
@@ -171,6 +174,13 @@ class App extends Component {
       );
     }
     
+    if (inParams){
+      page = (
+        <Parametre
+        mail={mail}
+        />
+      );
+    }
 
     return(
       <div>

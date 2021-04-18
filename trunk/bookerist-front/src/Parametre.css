@@ -2,8 +2,8 @@ div.parametre
 {
     text-align: center;
     position: relative;
-    margin-top: 50px;
-    margin: 2% auto;
+    margin-top: 80px;
+    margin: 80px auto 0 auto;
     width: 40%;
     border-radius: 20px;
     background-color: whitesmoke;
@@ -16,8 +16,6 @@ div.parametre
     font-size: 20px;
     position: relative;
     margin-top: 10px;
-    pointer-events: none;
-    background-color: #e0e0e0;
 }
 
 .bouton_modifier
@@ -39,8 +37,6 @@ div.parametre
     font-size: 20px;
     position: relative;
     margin-top: 20px;
-    pointer-events: none;
-    background-color: #e0e0e0;
 }
 
 .bouton_modifier#modifMdp

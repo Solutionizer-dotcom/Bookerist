@@ -30,15 +30,6 @@ export default function HeaderLoggedIn(props) {
     }
   });
 
-  // useEffect(() => {
-  //   if (state.menuOpened){
-  //     window.addEventListener('click', toggleMenu);
-  //   }
-  //   return function (){
-  //     window.removeEventListener('click', toggleMenu);
-  //   }
-  // }, [state.menuOpened]);
-
   function toggleProfil (event) {
     event.preventDefault();
     event.stopPropagation();
@@ -132,7 +123,7 @@ export default function HeaderLoggedIn(props) {
             ? (
               <ul id="choixProfil">
               <li>
-                <a href="none" name="Settings" onClick={handlePageMenu}>Paramètres</a>
+                <a href="none" name="Params" onClick={handlePageMenu}>Paramètres</a>
               </li>
               <li>
                 <a href="none" onClick={handleDisconnect}>Se déconnecter</a>
