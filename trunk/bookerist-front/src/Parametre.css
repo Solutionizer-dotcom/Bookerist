@@ -17,7 +17,6 @@ div.parametre
     position: relative;
     margin-top: 10px;
 }
-
 .bouton_modifier
 {
     width: 200px;
@@ -26,10 +25,11 @@ div.parametre
     font-size: 1em;
 }
 
-.bouton_modifier#save
+.bouton_modifier#save,
+.bouton_modifier#reset
 {
     position: relative;
-    margin-top: 100px;
+    margin-top: 30px;
 }
 
 .inputParamPass
@@ -38,7 +38,11 @@ div.parametre
     position: relative;
     margin-top: 20px;
 }
-
+.inputParamPass#mdp
+{
+    margin-top: 80px;
+    margin-bottom: 0;
+}
 .bouton_modifier#modifMdp
 {
     position: relative;

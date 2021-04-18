@@ -12,9 +12,7 @@ import App from './App';
 // import Parametre from './Parametre'
 
 ReactDOM.render(
-  <div>
-    <App />
-  </div>,
+  <App />,
   document.getElementById('root')
 );
 

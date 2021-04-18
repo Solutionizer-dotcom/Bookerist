@@ -15,6 +15,7 @@ class Parametre extends Component{
         this.handleModifPass= this.handleModifPass.bind(this)
         this.handleMailChange= this.handleMailChange.bind(this)
         this.handleReset = this.handleReset.bind(this)
+        this.handleSubmitParams = this.handleSubmitParams.bind(this)
     }
 
     handleModifMail(event) {
@@ -43,28 +44,33 @@ class Parametre extends Component{
         })
     }
 
+    handleSubmitParams(){
+
+    }
+
     render() {       
         return(
         <div className="parametre">
-            <h2>Paramètre</h2>
-            <input className="inputParam" type="email" id="mail" name="mail" value={this.state.mail} onChange={this.handleMailChange}
-            disabled= {!this.state.mailVisible} />
-            <br/>
-            <input className="bouton_modifier" id="modifMail" type="button" onClick={this.handleModifMail} value="Modifier"/>
-            <br/>
-            <input className="bouton_modifier" id="modifMdp" type="submit" onClick={this.handleModifPass} value="Modifier mot de passe"/>
-            <br/>
-            <input className="inputParamPass" type="password" id="mdp" name="mdp" placeholder="Ancien mot de passe" 
-            disabled= {!this.state.mdpVisible}/>
-            <br/>
-            <input className="inputParamPass" type="password" id="newMdp" name="newMdp" placeholder="Nouveau mot de passe" 
-            disabled= {!this.state.mdpVisible}/>
-            <br/>
-            <input className="inputParamPass" type="password" name="confirmer" placeholder="Confirmez mot de passe"
-            disabled= {!this.state.mdpVisible}/>
-            <br/>
-            <input type="reset" className="bouton_modifier" value="Annuler" onClick={this.handleReset} />
-            <input className="bouton_modifier" id="save" type="submit" value="Sauvegarder"/>
+            <form method="post" onSubmit={this.handleSubmitParams}>
+                <h2>Paramètre</h2>
+                <input className="inputParam" type="email" id="mail" name="mail" value={this.state.mail} onChange={this.handleMailChange}
+                disabled= {!this.state.mailVisible} required />
+                <br/>
+                <input className="bouton_modifier" id="modifMail" type="button" onClick={this.handleModifMail} value="Modifier"/>
+                <br/>
+                <input className="bouton_modifier" id="modifMdp" type="submit" onClick={this.handleModifPass} value="Modifier mot de passe"/>
+                <br/>
+                <input className="inputParamPass" type="password" id="newMdp" name="newMdp" placeholder="Nouveau mot de passe" 
+                disabled= {!this.state.mdpVisible}/>
+                <br/>
+                <input className="inputParamPass" type="password" name="confirmer" placeholder="Confirmez mot de passe"
+                disabled= {!this.state.mdpVisible}/>
+                <br/>
+                <input className="inputParamPass" type="password" id="mdp" name="mdp" placeholder="Mot de passe" required />
+                <br />
+                <input type="reset" className="bouton_modifier" id ="reset" value="Annuler" onClick={this.handleReset} />
+                <input className="bouton_modifier" id="save" type="submit" value="Sauvegarder"/>
+            </form>
         </div>
         )
     }
