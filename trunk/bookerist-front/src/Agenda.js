@@ -22,7 +22,7 @@ export default class Agenda extends Component {
     }
 
     componentDidUpdate(){
-        console.log("agenda update : ", this.state);
+
     }
 
     clearState(){
@@ -118,11 +118,6 @@ export default class Agenda extends Component {
                         daysOfWeek: [1, 2, 3, 4, 5],
                         startTime: '08:00',
                         endTime: '19:00'
-                    },
-                    {
-                        daysOfWeek: [6],
-                        startTime: '08:00',
-                        endTime: '13:00'
                     }
                 ]}
                 selectable={true}

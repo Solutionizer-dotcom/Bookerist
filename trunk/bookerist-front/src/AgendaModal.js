@@ -21,6 +21,7 @@ export default class AgendaModal extends Component {
         }
     }
     componentDidUpdate(){
+        console.log("update, getProps: " + this.state.getProps);
         const listProps = ["startDate", "startTime", "endDate", "endTime"];
         if (!this.state.getProps)
         {
@@ -85,10 +86,12 @@ export default class AgendaModal extends Component {
 
     handleReset = (e) => {
         this.setState({
-            eventType: this.props.eventType ? this.props.eventType : "dispo",
+            eventType: "dispo",
             allDay: false,
             startDate: '',
+            startTime: '',
             endDate: '',
+            endTime: '',
         })
     }
 
@@ -109,7 +112,6 @@ export default class AgendaModal extends Component {
             start: (this.state.startDate + (!this.state.allDay ? "T" + this.state.startTime : '')),
             end: (this.state.endDate + (!this.state.allDay ? "T" + this.state.endTime : ''))
         }
-        console.log(event);
         this.clearState();
         this.props.handleAddEvent(event);
         this.handleClose();
@@ -196,8 +198,6 @@ export default class AgendaModal extends Component {
                 </div>
             );
         }
-        return (
-            content
-        );
+        return content;
     }
 }

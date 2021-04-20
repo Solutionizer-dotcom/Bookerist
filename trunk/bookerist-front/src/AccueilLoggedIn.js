@@ -28,7 +28,7 @@ class AccueilLoggedIn extends Component {
     
     return (
     <div id="accLoggedIn" className={divClass}>
-      <Agenda />   
+      <Agenda />
     </div>
 
     );
