@@ -1,0 +1,107 @@
+#modal
+{
+    display: block;
+    position: fixed;
+    z-index: 3;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0,0,0,0.3);
+    color: rgb(138, 74, 176);
+
+}
+#modal-content
+{
+    background-color: whitesmoke;
+    width: 60vw;
+    margin: 20vh auto;
+    text-align: center;
+    font-size: large;
+}
+#modal-content header
+{
+    border-bottom: 1px black solid;
+}
+.agendaModal h1
+{
+    font-size: x-large;
+}
+#modal-content #labelType,
+#modal-content #type,
+#modal-content #labelAllDay,
+#modal-content #all-day
+{
+    margin-top: 15px;
+    margin-bottom: 20px;
+}
+#modal-content select.listeType:hover,
+#modal-content #labelAllDay:hover,
+#modal-content #allDay:hover
+{
+    cursor: pointer;
+}
+.eventTypeContent
+{
+    text-align: center;
+}
+.tableEventTypeContent
+{
+    margin: 25px auto;
+}
+.tableEventTypeContent td
+{
+    padding: 5px;
+}
+.tableEventTypeContent tr:nth-child(n)
+{
+    text-align: right;
+}
+#modal-content #type select
+{
+    color: rgb(138, 74, 176);
+}
+#modal-content #type select#dispo
+{
+    background-color: rgb(157, 177, 224);
+}
+#modal-content #type select#rdv
+{
+    background-color: rgb(250, 254, 0);
+}
+#modal-content #type select#evenement
+{
+    background-color: rgb(177, 214, 153);
+
+}
+#modal-content span.close
+{
+    float: right;
+    margin: 0;
+    font-weight: bold;
+    color: grey;
+}
+#modal-content span.close:hover
+{
+    cursor: pointer;
+    color: black;
+}
+.modalButton
+{
+    background-color: rgb(138, 74, 176);
+    color: white;
+    border-radius: 5px;
+    border: none;
+    padding: 5px 10px;
+    transition: background-color 0.5s;
+    outline: 0;
+}
+.modalButton:hover
+{
+    background-color: #9575cd;
+    cursor: pointer;
+}
+.modalButton:active
+{
+    box-shadow: 0px 0px 5px inset black;
+}

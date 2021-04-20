@@ -4,6 +4,7 @@
     max-height: 80vh;
     margin: 80px 3% auto 3%;
     display: flex;
+    z-index: 0;
 }
 #accLoggedIn.menuOpened
 {

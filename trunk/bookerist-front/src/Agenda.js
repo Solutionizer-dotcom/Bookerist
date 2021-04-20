@@ -2,45 +2,97 @@ import FullCalendar, { CalendarApi, formatDate } from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
+import momentPlugin, { toMoment } from '@fullcalendar/moment';
 import React, { Component } from 'react'
 import './Agenda.css';
-
-let eventId = 0;
+import AgendaModal from './AgendaModal';
 
 export default class Agenda extends Component {
     constructor(props){
         super(props);
 
+        this.state = {
+            openModal: false,
+            startDate: '',
+            startTime: '',
+            endDate: '',
+            endTime: '',
+            calendarAPI: null,
+        }
+    }
+
+    componentDidUpdate(){
+        console.log("agenda update : ", this.state);
+    }
+
+    clearState(){
+        this.setState({
+            openModal: false,
+            startDate: '',
+            startTime: '',
+            endDate: '',
+            endTime: '',
+        })
+    }
+    //fonction fléchée pour accéder au this
+    handleCloseModal = () => {
+        this.clearState();
+    }
+
+    handleModalChanges = (state) => {
+        this.setState(state);
     }
 
     handleDateSelection = (selectionInfo) => {
+        this.setState({ openModal: true });
         let calendar = selectionInfo.view.calendar;
-        let objet = prompt("Objet : ");
-        let description = prompt("Description : ");
         calendar.unselect();
-        if (objet && description){
-            calendar.addEvent({
-            id: eventId++,
-            title: objet,
-            extendedProps: {
-                description
-            },
-            allDay: selectionInfo.allDay,
-            start: selectionInfo.start,
-            end: selectionInfo.end,
-            backgroundColor: 'red',
-        })
-        }
-        
-        // alert("début : " + selectionInfo.start.toLocaleString() + "\n" + "fin : " + selectionInfo.end.toLocaleString());
+        let start = toMoment(selectionInfo.start, calendar);
+        let end = toMoment(selectionInfo.end, calendar);
+        this.setState({
+            startDate: start.format("YYYY-MM-DD"),
+            startTime: start.format("HH:mm"),
+            endDate: end.format("YYYY-MM-DD"),
+            endTime: end.format("HH:mm"),
+            calendarAPI: calendar,
+        });
+    }
 
+    handleAddEvent = (event) => {
+       let calendar = this.state.calendarAPI;
+       calendar.addEvent(event);
+       this.clearState();
     }
 
     render() {
+        const modal = this.state.openModal
+                        ?(
+                            <AgendaModal 
+                            handleCloseModal={this.handleCloseModal}
+                            handleAddEvent={this.handleAddEvent}
+                            startDate={this.state.startDate}
+                            startTime={this.state.startTime}
+                            endDate={this.state.endDate}
+                            endTime={this.state.endTime}
+                            />
+                        )
+                        : null
         return (
             <div className="divFullCalendar">
+
+                {/* <AgendaModal
+                openModal={this.state.openModal}
+                handleCloseModal={this.handleCloseModal}
+                handleChanges={this.handleModalChanges}
+                handleAddEvent={this.handleAddEvent}
+                startDate={this.state.startDate}
+                startTime={this.state.startTime}
+                endDate={this.state.endDate}
+                endTime={this.state.endTime}
+                /> */}
+                {modal}
                 <FullCalendar
-                plugins={[ dayGridPlugin, timeGridPlugin, interactionPlugin ]}
+                plugins={[ dayGridPlugin, timeGridPlugin, interactionPlugin, momentPlugin ]}
                 initialView="dayGridMonth"
                 locale='fr'
                 firstDay={1}
@@ -53,7 +105,7 @@ export default class Agenda extends Component {
                 // customButtons={{
                 //     addEvent: {
                 //         Text: 'Ajouter',
-                //         click: this.handleAddEvent
+                //         click: this.setState({ openModal: true })
                 //     }
                 // }}
                 headerToolbar={{

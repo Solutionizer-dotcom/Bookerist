@@ -10,9 +10,11 @@ import App from './App';
 // import Contact from './Contact';
 // import ForgotPass from './ForgotPass';
 // import Parametre from './Parametre'
+import AgendaModal from './AgendaModal';
 
 ReactDOM.render(
   <App />,
+  // <AgendaModal />,
   document.getElementById('root')
 );
 

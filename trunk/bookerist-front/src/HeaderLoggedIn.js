@@ -94,7 +94,7 @@ export default function HeaderLoggedIn(props) {
                     <a href='none' name="Accueil" onClick={handlePageMenu}>Accueil</a>
                   </li>
                   <li>      
-                    <a href='none' name="Creneau" onClick={handlePageMenu}>Ajout créneau</a>
+                    <a href='none' name="Creneau" onClick={handlePageMenu}>Ajout disponibilité</a>
                   </li>
                   <li>
                     <a href='none' name="Rdv" onClick={handlePageMenu}>Prendre rendez-vous</a>
