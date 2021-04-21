@@ -16,7 +16,7 @@ class App extends Component {
     super(props);
 
     this.state = ({
-
+      eventType: '',
       menuOpened: false,
       profilOpened: false,
 
@@ -57,8 +57,10 @@ class App extends Component {
   //fonction permettant de remettre le state à 0 (lors d'une déconnexion par exemple)
   clearState = () => {
     this.setState({
+      eventType:'',
       menuOpened: false,
       profilOpened: false,
+      
 
       prenom: '',
       nom: '',
@@ -69,7 +71,7 @@ class App extends Component {
       inInscription: false,
       inForgotPass: false,
       inContact: false,
-      inParams: false, 
+      inParams: false,
     })
   }
 
@@ -107,7 +109,24 @@ class App extends Component {
       this.setState({ [prop]: menuState[prop] });
     }
   }
+
+  handleEventType = ({ eventType }) => {
+    console.log("App, type: " + eventType);
+    this.setState({ eventType });
+  }
+
+  clearEventType = () => {
+    this.setState({
+      eventType: '',
+    })
+  }
   
+  handleChangeParams = (newMail) =>{
+    this.setState({
+      mail: newMail,
+    })
+  }
+
   //Quand le composant va être démonté, on s'assure de vider le stockage local
   componentWillUnmount() {
     localStorage.clear();
@@ -130,6 +149,7 @@ class App extends Component {
     gotoMain={() => this.handlePage({ inAccueil: true })}
     handlePage={this.handlePage}
     handleMenus={this.handleMenusAccueil}
+    giveEventType={this.handleEventType}
     />
     )
     : header = (
@@ -143,6 +163,8 @@ class App extends Component {
       <AccueilLoggedIn
       menuOpened={this.state.menuOpened}
       profilOpened={this.state.profilOpened}
+      eventType={this.state.eventType}
+      clearEventType={this.clearEventType}
        />
       // <Calendrier />
       )
@@ -178,6 +200,7 @@ class App extends Component {
       page = (
         <Parametre
         mail={mail}
+        handleChangeParams = {this.handleChangeParams}
         />
       );
     }

@@ -1,6 +1,8 @@
 const express = require('express'); //serveur express
+const app = express();
 const mongoose = require('mongoose'); //utilitaire pour mongodb
 const bcrypt = require('bcrypt'); //pour hasher les mdp
+const cors = require('cors');
 require('dotenv').config(); //pour utiliser un fichier .env au lieu d'écrire dans app les identifiants et mdp
 
 const nodemailer = require('nodemailer'); //pour envoyer des mails
@@ -17,12 +19,14 @@ const User = require('./models/User');
 mongoose.connect('mongodb+srv://bzalugas:Bookerist2021@cluster0.cjrzx.mongodb.net/Solutionzer?retryWrites=true&w=majority',
     { useNewUrlParser: true,
     useUnifiedTopology: true })
-    .then(() => console.log('Connexion à MongoDB réussie.'))
-    .catch((error) => console.log('Connexion à MongoDB échouée : ', error));
+.then(() => console.log('Connexion à MongoDB réussie.'))
+.catch((error) => console.log('Connexion à MongoDB échouée : ', error));
 
-    const app = express();
+    
+app.options('*', cors());
 
-    //autoriser les connexions à l'api depuis n'importe où
+
+//autoriser les connexions à l'api depuis n'importe où
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
@@ -44,6 +48,18 @@ const compareMdp = async (mdp, hash) => {
     return false;
 }
 
+
+const hashMdp = async (mdp) => {
+    try{
+        const salt =  10
+        return await bcrypt.hash(mdp, salt);
+    } catch (error) {
+        console.log(error);
+    }
+    //retourne false si erreur
+    return false;
+}
+
 //Envoi des infos inscription dans la BDD
 app.post('/inscription',  async (req, res, next) => {
     //vérification que le mail n'est pas encore enregistré
@@ -55,8 +71,7 @@ app.post('/inscription',  async (req, res, next) => {
         }
         //si on ne trouve rien, alors le mail n'est pas encore enregistré
         else{
-            const salt =  10
-            const hashPassword = await bcrypt.hash(req.body.mdp, salt)
+            const hashPassword = await hashMdp(req.body.mdp)
             const user = new User({
                 nom: req.body.nom,
                 prenom: req.body.prenom,
@@ -156,13 +171,125 @@ app.post('/contact', (req, res, next) => {
 
 })
 
-app.post('/forgotPass', (req,res,next)=>{
-    const options = {
-        from: 'Bookerist <solutionizer.bookerist@gmail.com>',
-        to: req.body.mail,
-        objet: 'Réinitialisation du mot de passe Bookerist',
-        message: 'Bonjour, voici votre nouveau mot de passe : ' + mdp
-    }
+// app.post('/forgotPass', async (req,res,next)=>{
+    
+
+
+//     const options = {
+//         from: 'Bookerist <solutionizer.bookerist@gmail.com>',
+//         to: req.body.mail,
+//         objet: 'Réinitialisation du mot de passe Bookerist',
+//         message: 'Bonjour, voici votre nouveau mot de passe : ' + mdp
+//     }
+// })
+
+app.post("/params", async (req, res, next) => 
+{
+    User.findOne({mail: req.body.mail})
+        .then(async user=> 
+        {
+            if (user === null)
+            {
+                res.status(400).json({ message: 'Utilisateur introuvable.'})
+            }
+            else 
+            {
+                const mdpIsValid = await compareMdp(req.body.mdp, user.mdp);
+                if(mdpIsValid)
+                {
+                    console.log("new mdp : " + req.body.newMdp)
+                    console.log("changeMdp: " + req.body.changeMdp +"changeMail: " + req.body.changeMail)
+                    let changeMdp = req.body.changeMdp
+                    if(req.body.changeMail && req.body.changeMdp)
+                    {
+                        console.log("1er if")
+                        User.find({mail: req.body.newMail})
+                        .then(async (user) => 
+                            {
+                                if (user.length > 0)
+                                {
+                                    console.log("user!==null")
+                                    res.status(400).json({ message: 'Le nouveau mail existe déjà.' })
+                                }
+                                else
+                                {
+                                    console.log("hash")
+                                    const hashPassword = await hashMdp(req.body.newMdp);
+                                    User.updateOne({mail: req.body.mail}, {mail: req.body.newMail, mdp: hashPassword})
+                                    .then(() => {
+                                        res.status(200).json({ message: "Vos informations personnelles ont été mises à jour", mail: req.body.newMail })
+                                    })
+                                    .catch(error => {
+                                        res.status(400).json({ message : JSON.stringify(error) })
+                                    })
+                                }
+                            })
+                        
+                        .catch(error => res.status(400).json({ message : JSON.stringify(error) }))          
+                        
+                    }    
+                
+                    else if(req.body.changeMail)
+                    {
+                        User.findOne({mail: req.body.newMail})
+                        .then(async user => 
+                            {
+                                if (user !== null)
+                                    res.status(400).json({ message: 'Le nouveau mail existe déjà.' })
+                                else
+                                {
+                                    User.updateOne({mail: req.body.mail}, {mail: req.body.newMail})
+                                    .then(() => {
+                                        res.status(200).json({ message: "Vos informations personnelles ont été mises à jour", mail: req.body.newMail })
+                                    })
+                                    .catch(error => {
+                                        res.status(400).json({ message : JSON.stringify(error) })
+                                    })
+                                }
+                            })
+                        .catch(error => 
+                        {
+                            res.status(400).json({ message : JSON.stringify(error) })
+                        })
+                    }
+                    
+                    else if(changeMdp)
+                    {
+                        const hashPassword = await hashMdp(req.body.newMdp);
+                        console.log(req.body.newMdp)
+                        User.updateOne({mail: req.body.mail}, {mdp: hashPassword})
+                        .then(() => {
+                            res.status(200).json({ message: "Vos informations personnelles ont été mises à jour" })
+                        })
+                        .catch(error => {
+                            res.status(400).json({ message : JSON.stringify(error) })
+                        })
+                    }
+                    console.log("ici")
+                }
+                else
+                {
+                    console.log("Dans else")
+                    res.status(400).json({message: "Mot de passe invalide"})
+                }
+            }
+        })    
+    
+        .catch(error => res.status(400).json({ message : JSON.stringify(error) })) 
 })
 
+
+
+
+
+
+
+
+app.get('/getUsers', (req, res, next) => {
+    User.find({}, '_id prenom nom mail')
+    .then(users => {
+        res.status(200).json(users)
+    })
+    .catch(error => res.status(400).json({ error }));
+})
 module.exports = app;

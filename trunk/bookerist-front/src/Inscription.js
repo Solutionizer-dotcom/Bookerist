@@ -20,24 +20,33 @@ class Inscription extends Component {
         this.baseURL = "http://localhost:3001";
     }
 
-    //fx fleche pour acceder au this
+    //fx flechée pour acceder au this
     saveChanges = event => {
         const name = event.target.name;
         const value = event.target.value;
         this.setState({ [name]: value });
     }
 
-    //Arrow fx for binding (gerer this)
     handleMailUpdate = event => {
         //automatiquement mettre le mail en minuscules
         this.setState({ mail: event.target.value.toLowerCase() })
+    }
+
+    handleFirstNameUpdate = (event) => {
+        let prenom = event.target.value;
+        let prenomMaj = prenom.charAt(0).toUpperCase() + prenom.slice(1);
+        this.setState({ prenom: prenomMaj });
+    }
+
+    handleLastNameUpdate = (event) => {
+        this.setState({ nom: event.target.value.toUpperCase() });
     }
 
     handleInscriptionFinished = () => {
         this.props.gotoMain();
     }
 
-    //fonction en fleche afin de pouvoir acceder au bon this
+    //fx flechée pour acceder au this
     sendInscription = event => {
         event.preventDefault()
         //destsructuration pour + de lisibilite
@@ -88,11 +97,13 @@ class Inscription extends Component {
                     <fieldset>
                         <h2>Inscription</h2>
 
-                        <input type="text" id="nom" name="nom" placeholder="NOM" required
-                        onChange={this.saveChanges} />
-
                         <input type="text" id="prenom" name="prenom" placeholder="Prénom" required
-                        onChange={this.saveChanges} />
+                        onChange={this.handleFirstNameUpdate}
+                        value={this.state.prenom} />
+
+                        <input type="text" id="nom" name="nom" placeholder="NOM" required
+                        onChange={this.handleLastNameUpdate}
+                        value={this.state.nom} />
 
                         <input type="email" id="mail" name="mail" placeholder="e-mail" required
                         onChange={this.handleMailUpdate}

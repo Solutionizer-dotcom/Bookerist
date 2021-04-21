@@ -53,9 +53,26 @@
 {
     padding: 5px;
 }
-.tableEventTypeContent tr:nth-child(n)
+.tableEventTypeContent td:nth-child(n)
 {
     text-align: right;
+}
+.tableEventTypeContent td:nth-child(2n)
+{
+    text-align: left;
+}
+.tableEventTypeContent td.liste_invites
+{
+    text-align: center;
+}
+.tableEventTypeContent td#liste_invites_label
+{
+    padding-top: 40px;
+}
+textarea#liste_invites
+{
+    height: 10vh;
+    width: 50%;
 }
 #modal-content #type select
 {
@@ -86,6 +103,54 @@
     cursor: pointer;
     color: black;
 }
+.addButton
+{
+    height: 18px;
+    width: 20px;
+    border-radius: 8px;
+    outline: 0;
+    background-image: url('./img/plus2.png');
+    background-repeat: no-repeat;
+    background-position: center;
+}
+#searchBarInvite
+{
+    width: 80%;
+}
+.tableEventTypeContent td#liste_invites_content
+{
+    margin: auto;
+    height: 20vh;
+}
+textarea#liste_invites
+{
+    width: 80%;
+    resize: none;
+    text-align: center;
+    overflow: scroll;
+    height: 100%;
+}
+/*.tableEventTypeContent td#liste_invites_content div#liste_invites
+{
+    border: 1px rgb(138, 74, 176) solid;
+    height: 15vh;
+    width: 60%;
+    margin: auto;
+    font-size: small;
+}
+.tableEventTypeContent td#liste_invites_content div#liste_invites ul#ul_invites
+{
+    padding-inline-start: 0;
+    margin-top: 5px;
+    list-style: none;
+}
+
+.tableEventTypeContent td#liste_invites_content div#liste_invites li.li_user_invited
+{
+    margin-top: 5px;
+    padding-bottom: 5px;
+    border-bottom: rgb(138, 74, 176) 1px solid;
+}*/
 .modalButton
 {
     background-color: rgb(138, 74, 176);

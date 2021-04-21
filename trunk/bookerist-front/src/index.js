@@ -14,7 +14,9 @@ import AgendaModal from './AgendaModal';
 
 ReactDOM.render(
   <App />,
-  // <AgendaModal />,
+  // <AgendaModal 
+  // eventType="evenement"
+  // />,
   document.getElementById('root')
 );
 

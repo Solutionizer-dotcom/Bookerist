@@ -9,18 +9,31 @@ class AccueilLoggedIn extends Component {
   constructor(props){
     super(props);
     this.state = {
+      eventType: '',
       menuOpened: false,
       profilOpened: false,
     }
   }
-
- componentDidUpdate(prevState){
+  
+  componentDidUpdate(prevProps){
    const menuOpened = this.props.menuOpened;
    const profilOpened = this.props.profilOpened;
-   if (prevState.menuOpened !== menuOpened || prevState.profilOpened !== profilOpened){
+   if (prevProps.menuOpened !== menuOpened || prevProps.profilOpened !== profilOpened){
      this.setState({ menuOpened, profilOpened });
    }
-   
+  
+   if(this.props.eventType !== this.state.eventType)
+   {
+      console.log("AccLI, type : " + this.props.eventType);
+      this.setState({ eventType: this.props.eventType });
+   }   
+ }
+
+ clearEventType = () => {
+   this.setState({
+     eventType: '',
+   });
+   this.props.clearEventType();
  }
 
   render() {
@@ -28,7 +41,10 @@ class AccueilLoggedIn extends Component {
     
     return (
     <div id="accLoggedIn" className={divClass}>
-      <Agenda />
+      <Agenda
+      eventType={this.state.eventType}
+      clearEventType={this.clearEventType}
+      />
     </div>
 
     );

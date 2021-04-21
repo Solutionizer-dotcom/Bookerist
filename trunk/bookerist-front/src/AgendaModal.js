@@ -3,7 +3,7 @@ import './AgendaModal.css';
 import './Button.css';
 
 let eventId = 0;
-
+const baseURL = "http://localhost:3001";
 //Composant permettant d'afficher le modal pour créer un évènement dans l'agenda
 export default class AgendaModal extends Component {
     constructor(props){
@@ -11,17 +11,19 @@ export default class AgendaModal extends Component {
 
         //Définission de l'état, par défaut le eventType sera disponibilité
         this.state = {
-            eventType: this.props.eventType ? this.props.eventType : "dispo",
+            eventType: this.props.eventType && this.props.eventType !== '' ? this.props.eventType : "dispo",
             allDay: false,
             startDate: '',
             startTime: '',
             endDate: '',
             endTime: '',
             getProps: false, //pour ne récupérer les props qu'une fois
+            alreadyFetched: false,
+            other_users: [],
+            users_invites: [],
         }
     }
     componentDidUpdate(){
-        console.log("update, getProps: " + this.state.getProps);
         const listProps = ["startDate", "startTime", "endDate", "endTime"];
         if (!this.state.getProps)
         {
@@ -33,14 +35,29 @@ export default class AgendaModal extends Component {
             }
             this.setState({ getProps: true});
         }
-        
+        if ((this.state.eventType === "evenement" || this.state.eventType === "rdv") && !this.state.alreadyFetched)
+        {
+            fetch(baseURL + "/getUsers", {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            })
+            .then(res => res.json())
+            .then(res => {
+                // console.log(res);
+                this.setState({ other_users: res});
+            })
+            .catch(err => console.log(err));
+            this.setState({ alreadyFetched: true });
+        }
         // let modal = document.getElementById("modal");
         // this.state.openModal ? modal.style.display = "block" : modal.style.display = "none";
     }
 
     clearState(){
         this.setState({
-            eventType: this.props.eventType ? this.props.eventType : "dispo",
+            eventType: this.props.eventType !== '' ? this.props.eventType : "dispo",
             allDay: false,
             startDate: '',
             startTime: '',
@@ -92,6 +109,8 @@ export default class AgendaModal extends Component {
             startTime: '',
             endDate: '',
             endTime: '',
+            other_users: [],
+            users_invites: [],
         })
     }
 
@@ -101,6 +120,8 @@ export default class AgendaModal extends Component {
         this.props.handleCloseModal();
     }
     
+   
+
     handleSave = () => {
         const event = {
             id: eventId++,
@@ -133,7 +154,7 @@ export default class AgendaModal extends Component {
                     <form id="formInfosEvent">
                         <div id="type">
                             <label htmlFor="eventType" id="labelType">Type : </label>
-                            <select name="eventType" className="listeType" id={eventType} onChange={this.handleChanges}>
+                            <select name="eventType" className="listeType" value={this.state.eventType} id={eventType} onChange={this.handleChanges}>
                                 <option value="dispo">disponibilité</option>
                                 <option value="rdv">rendez-vous</option>
                                 <option value="evenement">évènement</option>
@@ -156,15 +177,75 @@ export default class AgendaModal extends Component {
         );
     };
 
+
+    generateDatalist = () => {
+        const tabUsers = this.state.other_users;
+        const list = [];
+        tabUsers.map(user => {
+            list.push(<option key={user._id} value={user.prenom + " " + user.nom + " <" + user.mail + ">"} />);
+        })
+        return list;
+    }
+
+     //arrow fct to bind 'this'
+    handleAddInvite = () => {
+        let strInvite = document.getElementById('searchBarInvite').value;
+        if (strInvite && strInvite !== '')
+        {
+            let mailIndexes = [strInvite.indexOf("<") + 1 , strInvite.indexOf(">")]
+            let strMailInvite = strInvite.substring(mailIndexes[0], mailIndexes[1]);
+            let invite = this.state.other_users.find(user => user.mail === strMailInvite);
+            let alreadyInvited = this.state.users_invites.find(user => user._id === invite._id) ? true : false;
+            //on remet la search bar à vide
+            document.getElementById('searchBarInvite').value="";
+            if (!alreadyInvited)
+                this.setState({ users_invites: [...this.state.users_invites, invite] });
+        }
+
+    }
+
+    generateListeInvites = () => {
+        // let liste = [];
+
+        let liste = this.state.users_invites;
+        //on trie dans l'ordre alphabétique par NOM
+        //la fonction sort place el1 avant el2 si la foncion de tri renvoie un nb < 0,
+        //place el2 avant el1 si la fonction de tri renvoie un nb > 0
+        let listeSorted = liste.sort((user1, user2) => {
+            if (user1.nom.toUpperCase() < user2.nom.toUpperCase())
+                return -1;
+            else if (user1.nom.toUpperCase() > user2.nom.toUpperCase())
+                return 1;
+            return 0;
+        })
+        //on transforme la liste en ce qu'on veut afficher
+        listeSorted = listeSorted.map((user) => {
+            return user.prenom + " " + user.nom + " <" + user.mail + ">\n"
+        });
+        //on retourne le tableau sous forme de string en enlevant les virgules
+        return listeSorted.toString().replaceAll(',', '');
+        // this.state.users_invites.forEach((user) => {
+        //     liste.push(
+        //         user.prenom + " " + user.nom + " <" + user.mail + ">\n"
+        //     );
+        // });
+
+        // this.state.users_invites.forEach((user) => {
+        //     list.push(
+        //     <li key={user._id} className="li_user_invited">
+        //         {user.prenom + " " + user.nom + " <" + user.mail + ">"}
+        //     </li>
+        //     );
+        // })
+
+        // return liste;
+    }
     //fonction pour afficher les informations à remplir en fontion du type d'objet à créer
     //fonction fléchée pour accéder au this
     renderEventTypeContent = () => {
         let content = null;
-        // let startDate = this.props.startDate ? this.props.startDate : '';
-        // let startTime = this.props.startTime ? this.props.startTime : '';
-        // let endDate = this.props.endDate ? this.props.endDate : '';
-        // let endTime = this.props.endTime ? this.props.endTime : '';
-
+        //la variable content contiendra le contenu à afficher en fonction de la valeur de
+        //eventType dans l'état local
         if(this.state.eventType === false || this.state.eventType === "dispo")
         {
             content = (
@@ -191,6 +272,81 @@ export default class AgendaModal extends Component {
                                     value={this.state.endDate} />
                                     <input type="time" name="endTime" onChange={this.handleChanges}
                                     value={this.state.endTime} disabled={this.state.allDay}/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            );
+        }
+        else if (this.state.eventType === "evenement")
+        {
+            content = (
+                <div className="eventTypeContent">
+                    <table className="tableEventTypeContent">
+                        <tbody>
+                            <tr className="startDate">
+                                <td>
+                                    <label htmlFor="startDate">Date de début : </label>
+                                </td>
+                                <td>
+                                    <input type="date" name="startDate" onChange={this.handleChanges}
+                                    value={this.state.startDate} />
+                                    <input type="time" name="startTime" onChange={this.handleChanges}
+                                    value={this.state.startTime} disabled={this.state.allDay}/>
+                                </td>
+                            </tr>
+                            <tr className="endDate">
+                                <td>
+                                    <label htmlFor="endDate">Date de fin : </label>
+                                </td>
+                                <td>
+                                    <input type="date" name="endDate" onChange={this.handleChanges}
+                                    value={this.state.endDate} />
+                                    <input type="time" name="endTime" onChange={this.handleChanges}
+                                    value={this.state.endTime} disabled={this.state.allDay}/>
+                                </td>
+                            </tr>
+                            <tr className="searchInvites">
+                                <td>
+                                    <label htmlFor="labelSearchInvites">Personnes à inviter à l'évènement : </label>
+                                </td>
+                                <td>
+                                    <input list="usersList" name="searchBarInvite" className="searchBar" id="searchBarInvite"
+                                    onChange={this.handleChanges}
+                                    autoComplete="off"
+                                    />
+
+                                    <datalist id="usersList">
+                                        {this.generateDatalist()}
+                                    </datalist>
+
+                                    <button type="button" name="addButtonInvite" className="addButton" id="addButtonInvite"
+                                    onClick={this.handleAddInvite}
+                                    />
+                                    {/* <input type="search" /> */}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td className="liste_invites" id="liste_invites_label" colSpan="2">
+                                    <label htmlFor="liste_invites">Personnes invitées : </label>
+                                </td>
+                            </tr>
+                            <tr id="tr_liste_invites_content">
+                                <td className="liste_invites" id="liste_invites_content" colSpan="2">
+                                    <textarea name="liste_invites" id="liste_invites" readOnly disabled
+                                    value={this.generateListeInvites()} />
+
+                                    {/* <div id="liste_invites">
+                                        <ul id="ul_invites">
+                                            {this.generateListeInvites()}
+                                        </ul>
+                                    </div> */}
+
+                                    {/* <textarea name="liste_invites" id="liste_invites" readOnly>
+                                        
+                                    </textarea> */}
+
                                 </td>
                             </tr>
                         </tbody>

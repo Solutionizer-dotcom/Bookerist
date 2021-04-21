@@ -12,6 +12,7 @@ export default class Agenda extends Component {
         super(props);
 
         this.state = {
+            eventType: '',
             openModal: false,
             startDate: '',
             startTime: '',
@@ -21,12 +22,21 @@ export default class Agenda extends Component {
         }
     }
 
-    componentDidUpdate(){
+    componentDidUpdate(prevProps){
+        if(this.props.eventType !== this.state.eventType)
+        {
+            console.log("Agenda, type : " + this.props.eventType);
+            this.setState({
+                eventType: this.props.eventType,
+                openModal: true,
+            });
+        }
 
     }
 
     clearState(){
         this.setState({
+            eventType: '',
             openModal: false,
             startDate: '',
             startTime: '',
@@ -36,6 +46,7 @@ export default class Agenda extends Component {
     }
     //fonction fléchée pour accéder au this
     handleCloseModal = () => {
+        this.props.clearEventType();
         this.clearState();
     }
 
@@ -74,6 +85,7 @@ export default class Agenda extends Component {
                             startTime={this.state.startTime}
                             endDate={this.state.endDate}
                             endTime={this.state.endTime}
+                            eventType={this.state.eventType}
                             />
                         )
                         : null

@@ -1,6 +1,6 @@
 import './HeaderLoggedIn.css';
 import './Button.css';
-import logo from './logo.png';
+import logo from './img/logo.png';
 import React, { useEffect, useState } from 'react';
 
 export default function HeaderLoggedIn(props) {
@@ -8,6 +8,7 @@ export default function HeaderLoggedIn(props) {
     menuOpened: false,
     profilOpened: false,
   });
+  // const [eventType, setEventType] = useState("");
 
   // const {handleMenus} = props.handleMenus();
   //A chaque fois que le state est modifié et qu'un menu est ouvert, on vérifie si on clique en dehors du menu
@@ -66,8 +67,12 @@ export default function HeaderLoggedIn(props) {
   function handleGotoMain(e) {
     e.preventDefault();
     e.stopPropagation();
+    setState({
+      menuOpened: false,
+      profilOpened: false,
+    });
     props.gotoMain();
-    setState(false);
+    
   }
 
   function handlePageMenu(e){
@@ -75,8 +80,19 @@ export default function HeaderLoggedIn(props) {
     e.stopPropagation();
     const page = e.target.name;
     const pageName = `in${page}`
-    setState(false);
+    setState({
+      menuOpened: false,
+      profilOpened: false,
+    });
     props.handlePage({ [pageName]: true });
+  }
+
+  function handleEventMenu(e){
+    e.preventDefault();
+    // setEventType(e.target.name);
+
+    console.log("type : " + e.target.name);
+    props.giveEventType({eventType: e.target.name});
   }
 
   return (
@@ -94,13 +110,13 @@ export default function HeaderLoggedIn(props) {
                     <a href='none' name="Accueil" onClick={handlePageMenu}>Accueil</a>
                   </li>
                   <li>      
-                    <a href='none' name="Creneau" onClick={handlePageMenu}>Ajout disponibilité</a>
+                    <a href='none' name="dispo" onClick={handleEventMenu}>Ajout disponibilité</a>
                   </li>
                   <li>
-                    <a href='none' name="Rdv" onClick={handlePageMenu}>Prendre rendez-vous</a>
+                    <a href='none' name="rdv" onClick={handleEventMenu}>Prendre rendez-vous</a>
                   </li>        
                   <li>
-                    <a href='none' name="Event" onClick={handlePageMenu}>Créer évènement</a>
+                    <a href='none' name="evenement" onClick={handleEventMenu}>Créer évènement</a>
                   </li>
                   <li>
                     <a href='none' name="Manuel" onClick={handlePageMenu}>Manuel d'utilisation</a>
