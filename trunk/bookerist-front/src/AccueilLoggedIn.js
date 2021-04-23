@@ -3,12 +3,13 @@ import React, { Component } from 'react';
 import Agenda from './Agenda';
 
 
-const baseURL = "http://localhost:3001";
+// const baseURL = "http://localhost:3001";
 
 class AccueilLoggedIn extends Component {
   constructor(props){
     super(props);
     this.state = {
+      mail: this.props.mail,
       eventType: '',
       menuOpened: false,
       profilOpened: false,
@@ -22,11 +23,14 @@ class AccueilLoggedIn extends Component {
      this.setState({ menuOpened, profilOpened });
    }
   
-   if(this.props.eventType !== this.state.eventType)
+   if (this.props.eventType !== this.state.eventType)
    {
-      console.log("AccLI, type : " + this.props.eventType);
       this.setState({ eventType: this.props.eventType });
-   }   
+   }
+   if (prevProps.mail !== this.props.mail)
+   {
+     this.setState({ mail: this.props.mail });
+   }
  }
 
  clearEventType = () => {
@@ -44,6 +48,7 @@ class AccueilLoggedIn extends Component {
       <Agenda
       eventType={this.state.eventType}
       clearEventType={this.clearEventType}
+      mail={this.state.mail}
       />
     </div>
 

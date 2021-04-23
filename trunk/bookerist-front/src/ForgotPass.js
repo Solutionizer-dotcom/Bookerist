@@ -1,5 +1,4 @@
 import React, { useState } from "react"
-import Header from "./Header" 
 import "./ForgotPass.css"  
 const baseURL="http://localhost:3001/";
 
@@ -22,8 +21,6 @@ const ForgotPass = ()=>{
     }
 
     return(
-        <div>
-            <Header/>
         <div className="forgotPass">
             <h2>Mot de passe oublié </h2>
             <form id="formulaireMDP" onSubmit={handleForgetPass}>
@@ -35,7 +32,6 @@ const ForgotPass = ()=>{
             <br/>
             <input className="bouton_forgotPass" type="submit" value="Envoyer"></input>
             </form>
-        </div>
         </div>
     );
 

@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import reportWebVitals from './reportWebVitals'
+// import reportWebVitals from './reportWebVitals'
 import App from './App';
 // import HeaderLoggedIn from './HeaderLoggedIn';
 // import Test from './Test';
@@ -10,7 +10,7 @@ import App from './App';
 // import Contact from './Contact';
 // import ForgotPass from './ForgotPass';
 // import Parametre from './Parametre'
-import AgendaModal from './AgendaModal';
+// import AgendaModal from './AgendaModal';
 
 ReactDOM.render(
   <App />,

@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import './AgendaModal.css';
 import './Button.css';
+// import moment from 'moment';
 
-let eventId = 0;
+// let eventId = 0;
 const baseURL = "http://localhost:3001";
 //Composant permettant d'afficher le modal pour créer un évènement dans l'agenda
 export default class AgendaModal extends Component {
@@ -17,6 +18,8 @@ export default class AgendaModal extends Component {
             startTime: '',
             endDate: '',
             endTime: '',
+            objet: '',
+            description: '',
             getProps: false, //pour ne récupérer les props qu'une fois
             alreadyFetched: false,
             other_users: [],
@@ -64,6 +67,8 @@ export default class AgendaModal extends Component {
             endDate: '',
             endTime: '',
             getProps: false,
+            other_users: [],
+            users_invites: [],
         })
     }
 
@@ -122,16 +127,37 @@ export default class AgendaModal extends Component {
     
    
 
-    handleSave = () => {
-        const event = {
-            id: eventId++,
-            title: this.state.eventType === "dispo" ? "disponibilité" : this.state.objet,
-            extendedProps: this.state.description ? {
-                description: this.state.description
-            } : null,
-            allDay: this.state.allDay,
-            start: (this.state.startDate + (!this.state.allDay ? "T" + this.state.startTime : '')),
-            end: (this.state.endDate + (!this.state.allDay ? "T" + this.state.endTime : ''))
+    handleSave = (e) => {
+        e.preventDefault();
+        // const event = {
+        //     id: eventId++,
+        //     title: this.state.eventType === "dispo" ? "disponibilité" : this.state.objet,
+        //     extendedProps: {
+        //         type: this.state.eventType,
+        //         description: this.state.description ? this.state.description : ''
+        //     },
+        //     allDay: this.state.allDay,
+        //     start: (this.state.startDate + (!this.state.allDay ? "T" + this.state.startTime : '')),
+        //     end: (this.state.endDate + (!this.state.allDay ? "T" + this.state.endTime : ''))
+        // }
+        let event = {};
+        if (this.state.eventType === 'evenement')
+        {
+            event = {
+                // id: moment().format('x'),
+                title: this.state.objet,
+                extendedProps: {
+                    user_mail: this.props.mail,
+                    users_invited: this.state.users_invites,
+                    type: this.state.eventType,
+                    description: this.state.description,
+                },
+                allDay: this.state.allDay,
+                start: (this.state.startDate + (!this.state.allDay ? "T" + this.state.startTime : '')),
+                end: (this.state.endDate + (!this.state.allDay ? "T" + this.state.endTime : '')),
+                color: "rgb(177, 214, 153)",
+                textColor: "rgb(138, 74, 176)"
+            }
         }
         this.clearState();
         this.props.handleAddEvent(event);
@@ -151,7 +177,7 @@ export default class AgendaModal extends Component {
                         <span className="close" onClick={this.handleClose}>&times;</span>
                         <h1>{headerTxt}</h1>
                     </header>
-                    <form id="formInfosEvent">
+                    <form id="formInfosEvent" onSubmit={this.handleSave}>
                         <div id="type">
                             <label htmlFor="eventType" id="labelType">Type : </label>
                             <select name="eventType" className="listeType" value={this.state.eventType} id={eventType} onChange={this.handleChanges}>
@@ -160,15 +186,15 @@ export default class AgendaModal extends Component {
                                 <option value="evenement">évènement</option>
                             </select>
                         </div>
-                        <div id="all-day">
+                        {/* <div id="all-day">
                             <input type="checkbox" name="allDay" id="allDay" value="allDay" onChange={this.handleCheckboxChanges}/>
                             <label htmlFor="allDay" name="labelAllDay" id="labelAllDay">Toute la journée</label>
-                        </div>
+                        </div> */}
                         {this.renderEventTypeContent()}
                         <footer>
                             {/* <button type="button" name="reset" className="modalButton" id="reset" onClick={this.handleReset}>Réinitialiser</button> */}
                             <input type="reset" name="reset" className="modalButton" value="Réinitialiser" onClick={this.handleReset}/>
-                            <button type="button" name="save" className="modalButton" id="save" onClick={this.handleSave}>Sauvegarder</button>
+                            <button type="submit" name="save" className="modalButton" id="save">Sauvegarder</button>
                         </footer>
                     </form>
                 </div>
@@ -177,12 +203,81 @@ export default class AgendaModal extends Component {
         );
     };
 
+    renderEventDate = () => {
+        return (
+            <div id="div_date">
+                {/* <table className="tableEventTypeContent"> */}
+                <table className="tableEventDate">
+                    <tbody>
+                        <tr className="tr_allday">
+                            <td>
+                                <input type="checkbox" name="allDay" id="allDay" value="allDay" onChange={this.handleCheckboxChanges}/>
+                            </td>
+                            <td>
+                                <label htmlFor="allDay" name="labelAllDay" id="labelAllDay">Toute la journée</label>
+                            </td>
+                        </tr>
+                        <tr className="tr_startDate">
+                            <td>
+                                <label htmlFor="startDate">Date de début : </label>
+                            </td>
+                            <td>
+                                <input type="date" name="startDate" onChange={this.handleChanges}
+                                value={this.state.startDate} required />
+                                <input type="time" name="startTime" onChange={this.handleChanges}
+                                value={this.state.startTime} disabled={this.state.allDay}/>
+                            </td>
+                        </tr>
+                        <tr className="tr_endDate">
+                            <td>
+                                <label htmlFor="endDate">Date de fin : </label>
+                            </td>
+                            <td>
+                                <input type="date" name="endDate" onChange={this.handleChanges}
+                                value={this.state.endDate} required />
+                                <input type="time" name="endTime" onChange={this.handleChanges}
+                                value={this.state.endTime} disabled={this.state.allDay}/>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+        );      
+    }
+
+    renderEventObjAndDescription = () => {
+        return (
+            <div>
+            <table className="table_Obj_description">
+                <tbody>
+                    <tr className="tr_obj">
+                        <td>
+                            <label htmlFor="inputObj">Objet : </label>
+                        </td>
+                        <td>
+                            <input type="text" name="objet" id="inputObj" maxLength="30" onChange={this.handleChanges} autoComplete="off" required />
+                        </td>
+                    </tr>
+                    <tr className="tr_description">
+                        <td>
+                            <label htmlFor="inputDescription">Description : </label>
+                        </td>
+                        <td>
+                            <textarea name="description" id="inputDescription" maxLength="130" value={this.state.description} onChange={this.handleChanges} />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            </div>
+        );
+    }
 
     generateDatalist = () => {
         const tabUsers = this.state.other_users;
-        const list = [];
-        tabUsers.map(user => {
-            list.push(<option key={user._id} value={user.prenom + " " + user.nom + " <" + user.mail + ">"} />);
+        // const list = [];
+        let list = tabUsers.map(user => {
+            return(<option key={user._id} value={user.prenom + " " + user.nom + " <" + user.mail + ">"} />);
         })
         return list;
     }
@@ -249,33 +344,36 @@ export default class AgendaModal extends Component {
         if(this.state.eventType === false || this.state.eventType === "dispo")
         {
             content = (
+                // <div className="eventTypeContent">
+                //     <table className="tableEventTypeContent">
+                //         <tbody>
+                //             <tr className="startDate">
+                //                 <td>
+                //                     <label htmlFor="startDate">Date de début : </label>
+                //                 </td>
+                //                 <td>
+                //                     <input type="date" name="startDate" onChange={this.handleChanges}
+                //                     value={this.state.startDate} />
+                //                     <input type="time" name="startTime" onChange={this.handleChanges}
+                //                     value={this.state.startTime} disabled={this.state.allDay}/>
+                //                 </td>
+                //             </tr>
+                //             <tr className="endDate">
+                //                 <td>
+                //                     <label htmlFor="endDate">Date de fin : </label>
+                //                 </td>
+                //                 <td>
+                //                     <input type="date" name="endDate" onChange={this.handleChanges}
+                //                     value={this.state.endDate} />
+                //                     <input type="time" name="endTime" onChange={this.handleChanges}
+                //                     value={this.state.endTime} disabled={this.state.allDay}/>
+                //                 </td>
+                //             </tr>
+                //         </tbody>
+                //     </table>
+                // </div>
                 <div className="eventTypeContent">
-                    <table className="tableEventTypeContent">
-                        <tbody>
-                            <tr className="startDate">
-                                <td>
-                                    <label htmlFor="startDate">Date de début : </label>
-                                </td>
-                                <td>
-                                    <input type="date" name="startDate" onChange={this.handleChanges}
-                                    value={this.state.startDate} />
-                                    <input type="time" name="startTime" onChange={this.handleChanges}
-                                    value={this.state.startTime} disabled={this.state.allDay}/>
-                                </td>
-                            </tr>
-                            <tr className="endDate">
-                                <td>
-                                    <label htmlFor="endDate">Date de fin : </label>
-                                </td>
-                                <td>
-                                    <input type="date" name="endDate" onChange={this.handleChanges}
-                                    value={this.state.endDate} />
-                                    <input type="time" name="endTime" onChange={this.handleChanges}
-                                    value={this.state.endTime} disabled={this.state.allDay}/>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    {this.renderEventDate()}
                 </div>
             );
         }
@@ -283,9 +381,11 @@ export default class AgendaModal extends Component {
         {
             content = (
                 <div className="eventTypeContent">
-                    <table className="tableEventTypeContent">
+                    {this.renderEventObjAndDescription()}
+                    {this.renderEventDate()}
+                    <table className="tableEventTypeContent_evenement">
                         <tbody>
-                            <tr className="startDate">
+                            {/* <tr className="startDate">
                                 <td>
                                     <label htmlFor="startDate">Date de début : </label>
                                 </td>
@@ -306,7 +406,7 @@ export default class AgendaModal extends Component {
                                     <input type="time" name="endTime" onChange={this.handleChanges}
                                     value={this.state.endTime} disabled={this.state.allDay}/>
                                 </td>
-                            </tr>
+                            </tr> */}
                             <tr className="searchInvites">
                                 <td>
                                     <label htmlFor="labelSearchInvites">Personnes à inviter à l'évènement : </label>

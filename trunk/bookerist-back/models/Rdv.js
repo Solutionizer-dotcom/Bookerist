@@ -1,9 +1,8 @@
 const mongoose = require('mongoose');
-const User = require('./User');
 
 const rdvSchema = mongoose.Schema({
-    userDispo: { type: User, required: true },
-    userRdv: { type: User, required: true },
+    user_mail: { type: String, required: true },
+    user_dispo_mail: { type: String, required: true },
     dateStart: { type: String, required: true },
     dateEnd: { type: String, required: true },
     objet: { type: String, required: true },

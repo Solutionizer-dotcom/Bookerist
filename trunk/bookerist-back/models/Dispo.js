@@ -1,8 +1,7 @@
 const mongoose = require('mongoose');
-const User = require('./User');
 
-const dispoSchema = mongoose.schema({
-    user: { type: User, required: true },
+const dispoSchema = mongoose.Schema({
+    user_mail: { type: String, required: true },
     dateStart: { type: String, required: true },
     dateEnd: { type: String, required: true }
 });

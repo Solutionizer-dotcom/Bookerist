@@ -15,7 +15,7 @@
 {
     background-color: whitesmoke;
     width: 60vw;
-    margin: 20vh auto;
+    margin: 10vh auto;
     text-align: center;
     font-size: large;
 }
@@ -41,33 +41,50 @@
 {
     cursor: pointer;
 }
-.eventTypeContent
+div.eventTypeContent
 {
     text-align: center;
 }
-.tableEventTypeContent
+.tableEventDate, .tableEventTypeContent_evenement, .table_Obj_description
 {
     margin: 25px auto;
 }
-.tableEventTypeContent td
+.tableEventDate td, .tableEventTypeContent_evenement td, .table_Obj_description td
 {
     padding: 5px;
+
 }
-.tableEventTypeContent td:nth-child(n)
+.tableEventDate td:nth-child(n), .tableEventTypeContent_evenement td:nth-child(n),
+.table_Obj_description td:nth-child(n)
 {
     text-align: right;
 }
-.tableEventTypeContent td:nth-child(2n)
+.tableEventDate td:nth-child(2n), .tableEventTypeContent_evenement td:nth-child(2n),
+.table_Obj_description td:nth-child(2n)
 {
     text-align: left;
 }
-.tableEventTypeContent td.liste_invites
+#inputObj
+{
+    width: 100%;
+}
+#inputDescription
+{
+    resize: none;
+    height: 8em;
+    width: 101%;
+}
+.tableEventTypeContent_evenement
+{
+
+}
+.tableEventTypeContent_evenement td.liste_invites
 {
     text-align: center;
 }
-.tableEventTypeContent td#liste_invites_label
+.tableEventTypeContent_evenement td#liste_invites_label
 {
-    padding-top: 40px;
+    padding-top: 20px;
 }
 textarea#liste_invites
 {
@@ -109,7 +126,10 @@ textarea#liste_invites
     width: 20px;
     border-radius: 8px;
     outline: 0;
-    background-image: url('./img/plus2.png');
+    border: none;
+    position: relative;
+    top: 2px;
+    background-image: url('./img/plus_rond2.png');
     background-repeat: no-repeat;
     background-position: center;
 }
@@ -117,7 +137,7 @@ textarea#liste_invites
 {
     width: 80%;
 }
-.tableEventTypeContent td#liste_invites_content
+.tableEventTypeContent_evenement td#liste_invites_content
 {
     margin: auto;
     height: 20vh;

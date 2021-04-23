@@ -91,7 +91,6 @@ export default function HeaderLoggedIn(props) {
     e.preventDefault();
     // setEventType(e.target.name);
 
-    console.log("type : " + e.target.name);
     props.giveEventType({eventType: e.target.name});
   }
 

@@ -13,7 +13,10 @@ oAuth2Client.setCredentials({ refresh_token: process.env.OAUTH_REFRESH_TOKEN });
 
 //modèles de la BDD
 const User = require('./models/User');
-// const AgendaEvent = require('./models/AgendaEvent');
+const Evenement = require('./models/Evenement');
+const Dispo = require('./models/Dispo');
+const Rdv = require('./models/Rdv');
+
 
 //Connexion à la base de donnée MongoDB
 mongoose.connect('mongodb+srv://bzalugas:Bookerist2021@cluster0.cjrzx.mongodb.net/Solutionzer?retryWrites=true&w=majority',
@@ -150,26 +153,50 @@ app.post('/contact', (req, res, next) => {
         res.json({ message: "Erreur lors de l'envoi du message." });
     });
 
-
+});
     //Envoi des données d'event depuis l'agenda
     app.post('/event/save', (req, res, next) => {
-        const event = new AgendaEvent({...req.body}); //changer model
-        event.save()
-        .then(res => res.status(200).json({ message: "event saved" }))
-        .catch(error => res.status(400).json({ message: error }));
+        console.log(req.body);
+        const type = req.body.type;
+        let event;
+        switch(type){
+            case 'evenement': event = new Evenement({...req.body});
+                break;
+            case 'dispo': event = new Dispo({...req.body});
+                break;
+            case 'rdv': event = new Rdv({...req.body});
+                break;
+        };
+        if (event !== undefined)
+        {
+            event.save()
+            .then(() => res.status(201).json({ message: "sauvegarde reussie." }))
+            .catch(err => res.status(400).json({ message: err }));
+        }
+        // const event = new AgendaEvent({...req.body}); //changer model
+        // event.save()
+        // .then(res => res.status(200).json({ message: "event saved" }))
+        // .catch(error => res.status(400).json({ message: error }));
     });
 
-    app.get('/events/get', (req, res, next) => {
-        AgendaEvent.find() //changer le model
-        .then(events => {
-            if (events.length > 0){
-                res.status(200).json({events})
-            }
-        })
-        .catch(error => res.status(400).json({ message: error }));
-    });
+    app.post('/events/get', async (req, res, next) => {
+        let all_events = [];
+        const mail = req.body.mail;
+        let evenements = Evenement.find({ user_mail: mail });
+        let dispos = Dispo.find({ user_mail: mail });
+        let rdv = Rdv.find({ user_mail: mail }) //ajouter || user_dispo_mail: mail
 
-})
+        evenements = await evenements.exec();
+        dispos = await dispos.exec();
+        rdv = await rdv.exec();
+
+        all_events = evenements.concat(dispos).concat(rdv);
+
+        if (all_events.length > 0)
+            res.status(200).json({ all_events, message: 'récupération réussie' });
+        else
+            res.status(200).json({ message: 'base vide' })
+    });
 
 // app.post('/forgotPass', async (req,res,next)=>{
     

@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import Header from "./Header"
 import './Parametre.css'
 
 const baseURL = "http://localhost:3001"

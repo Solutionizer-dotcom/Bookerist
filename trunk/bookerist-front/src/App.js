@@ -165,6 +165,7 @@ class App extends Component {
       profilOpened={this.state.profilOpened}
       eventType={this.state.eventType}
       clearEventType={this.clearEventType}
+      mail={this.state.mail}
        />
       // <Calendrier />
       )
