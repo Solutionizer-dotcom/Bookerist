@@ -156,7 +156,6 @@ app.post('/contact', (req, res, next) => {
 });
     //Envoi des données d'event depuis l'agenda
     app.post('/event/save', (req, res, next) => {
-        console.log(req.body);
         const type = req.body.type;
         let event;
         switch(type){
@@ -224,23 +223,18 @@ app.post("/params", async (req, res, next) =>
                 const mdpIsValid = await compareMdp(req.body.mdp, user.mdp);
                 if(mdpIsValid)
                 {
-                    console.log("new mdp : " + req.body.newMdp)
-                    console.log("changeMdp: " + req.body.changeMdp +"changeMail: " + req.body.changeMail)
                     let changeMdp = req.body.changeMdp
                     if(req.body.changeMail && req.body.changeMdp)
                     {
-                        console.log("1er if")
                         User.find({mail: req.body.newMail})
                         .then(async (user) => 
                             {
                                 if (user.length > 0)
                                 {
-                                    console.log("user!==null")
                                     res.status(400).json({ message: 'Le nouveau mail existe déjà.' })
                                 }
                                 else
                                 {
-                                    console.log("hash")
                                     const hashPassword = await hashMdp(req.body.newMdp);
                                     User.updateOne({mail: req.body.mail}, {mail: req.body.newMail, mdp: hashPassword})
                                     .then(() => {
@@ -283,7 +277,6 @@ app.post("/params", async (req, res, next) =>
                     else if(changeMdp)
                     {
                         const hashPassword = await hashMdp(req.body.newMdp);
-                        console.log(req.body.newMdp)
                         User.updateOne({mail: req.body.mail}, {mdp: hashPassword})
                         .then(() => {
                             res.status(200).json({ message: "Vos informations personnelles ont été mises à jour" })
@@ -292,11 +285,9 @@ app.post("/params", async (req, res, next) =>
                             res.status(400).json({ message : JSON.stringify(error) })
                         })
                     }
-                    console.log("ici")
                 }
                 else
                 {
-                    console.log("Dans else")
                     res.status(400).json({message: "Mot de passe invalide"})
                 }
             }
