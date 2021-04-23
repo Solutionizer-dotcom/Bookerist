@@ -105,7 +105,7 @@ export default class Agenda extends Component {
         {
             this.setState({ mail: this.props.mail });
         }
-        console.log(this.state.user_events);
+        // console.log(this.state.user_events);
         
         // if (prevState.user_events.length !== this.state.user_events.length)
         // {
