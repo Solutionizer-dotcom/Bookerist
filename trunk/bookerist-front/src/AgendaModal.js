@@ -13,6 +13,7 @@ export default class AgendaModal extends Component {
         //Définission de l'état, par défaut le eventType sera disponibilité
         this.state = {
             eventType: this.props.eventType && this.props.eventType !== '' ? this.props.eventType : "dispo",
+            eventId: this.props.eventId && this.props.eventId !== '' ? this.props.eventId : '',
             allDay: false,
             startDate: '',
             startTime: '',
@@ -40,15 +41,15 @@ export default class AgendaModal extends Component {
         }
         if ((this.state.eventType === "evenement" || this.state.eventType === "rdv") && !this.state.alreadyFetched)
         {
-            fetch(baseURL + "/getUsers", {
-                method: 'GET',
+            fetch(baseURL + "/users/get", {
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
+                body: JSON.stringify({ mail: this.props.mail })
             })
             .then(res => res.json())
             .then(res => {
-                // console.log(res);
                 this.setState({ other_users: res});
             })
             .catch(err => console.log(err));
@@ -274,12 +275,15 @@ export default class AgendaModal extends Component {
     }
 
     generateDatalist = () => {
-        const tabUsers = this.state.other_users;
-        // const list = [];
-        let list = tabUsers.map(user => {
-            return(<option key={user._id} value={user.prenom + " " + user.nom + " <" + user.mail + ">"} />);
-        })
-        return list;
+        if (this.state.other_users.length > 0)
+        {
+            let tabUsers = this.state.other_users;
+            let list = tabUsers.map(user => {
+                return(<option key={user._id} value={user.prenom + " " + user.nom + " <" + user.mail + ">"} />);
+            })
+            return list;
+        }
+        return null;
     }
 
      //arrow fct to bind 'this'

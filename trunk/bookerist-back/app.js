@@ -154,29 +154,52 @@ app.post('/contact', (req, res, next) => {
     });
 
 });
-    //Envoi des données d'event depuis l'agenda
-    app.post('/event/save', (req, res, next) => {
-        const type = req.body.type;
-        let event;
-        switch(type){
-            case 'evenement': event = new Evenement({...req.body});
-                break;
-            case 'dispo': event = new Dispo({...req.body});
-                break;
-            case 'rdv': event = new Rdv({...req.body});
-                break;
-        };
-        if (event !== undefined)
+    //Envoi des données d'event depuis l'agenda vers la BDD
+    app.post('/event/save', async (req, res, next) => {
+        const type = req.body.event_parsed.type;
+        let id = req.body.id;
+        //Si la requete ne comporte pas d'id, alors l'event n'est pas encore enregistré dans la bdd
+        if (id === '')
         {
-            event.save()
-            .then(() => res.status(201).json({ message: "sauvegarde reussie." }))
-            .catch(err => res.status(400).json({ message: err }));
+            let event = undefined;
+            switch(type){
+                case 'evenement': event = new Evenement({...req.body.event_parsed});
+                    break;
+                case 'dispo': event = new Dispo({...req.body.event_parsed});
+                    break;
+                case 'rdv': event = new Rdv({...req.body.event_parsed});
+                    break;
+            };
+            if (event !== undefined)
+            {
+                event.save()
+                .then(() => res.status(201).json({ message: "sauvegarde reussie." }))
+                .catch(err => res.status(400).json({ message: err }));
+            }
         }
-        // const event = new AgendaEvent({...req.body}); //changer model
-        // event.save()
-        // .then(res => res.status(200).json({ message: "event saved" }))
-        // .catch(error => res.status(400).json({ message: error }));
+        //sinon, c'est qu'il doit juste etre modifié
+        else
+        {
+            let updateReq;
+            switch(type)
+            {
+                case 'evenement':
+                    updateReq = await Evenement.replaceOne({ _id: id }, {...req.body.event_parsed});
+                    break;
+                case 'dispo':
+                    updateReq = await Dispo.replaceOne({ _id: id }, {...req.body.event_parsed});
+                    break;
+                case 'rdv':
+                    updateReq = await Rdv.replaceOne({ _id: id }, {...req.body.event_parsed});
+                    break;
+            };
+        }
     });
+
+    //Enregistrement modifications d'event
+    app.post('/event/update', (req, res, next) => {
+
+    })
 
     app.post('/events/get', async (req, res, next) => {
         let all_events = [];
@@ -303,11 +326,12 @@ app.post("/params", async (req, res, next) =>
 
 
 
-app.get('/getUsers', (req, res, next) => {
-    User.find({}, '_id prenom nom mail')
-    .then(users => {
+app.post('/users/get', (req, res, next) => {
+    //Recherche de tous les utilisateurs exceptés ceux dont le mail correspond au mail de l'utilisateur courrant.
+    User.find({ mail: { $not: { $regex: req.body.mail } } }, '_id prenom nom mail')
+    .then(users => {        
         res.status(200).json(users)
     })
-    .catch(error => res.status(400).json({ error }));
+    .catch(error => res.status(400).json({ error }) );
 })
 module.exports = app;

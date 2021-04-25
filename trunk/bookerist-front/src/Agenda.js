@@ -27,15 +27,90 @@ export default class Agenda extends Component {
             startTime: '',
             endDate: '',
             endTime: '',
+            eventId: '',
             user_events: [],
-            getEvents: true, //doit-on récupérer les evenements dans la bdd ?
-            putEvents: false, //doit-on envoyer les evenements locaux dans la bdd ?
+            getEvents: false, //doit-on récupérer les evenements dans la bdd ?
+            // putEvents: false, //doit-on envoyer les evenements locaux dans la bdd ?
         }
     }
     calendarRef = React.createRef(); //on donne cette reference au calendrier pour toujours l'avoir et pouvoir utiliser les methodes de l'api
 
     componentDidMount(){
+        //quand le composant est monté, on veut récupérer les données d'events dans la bdd
+            this.setState({ getEvents: true });
+            // fetch(baseURL + "/events/get", {
+            //     method: 'POST',
+            //     headers: {
+            //         'Content-Type': 'application/json'
+            //     },
+            //     body: JSON.stringify({mail: this.state.mail })
+            // })
+            // .then((res) => {
+            //     if (res.ok)
+            //     {
+            //         res.json().then((res) => {
+            //             if (res.all_events)
+            //             {
+            //                 console.log("events fetched : ", res.all_events);
+            //                 let evenements = [];
+            //                 let dispos = [];
+            //                 let rdvs = [];
+            //                 let all_events = [];
+            //                 res.all_events.forEach(e => {
+            //                     if (e.type === 'evenement')
+            //                         evenements.push({
+            //                             id: e._id,
+            //                             title: e.objet,
+            //                             extendedProps: {
+            //                                 user_mail: e.user_mail,
+            //                                 users_invited: e.users_invited,
+            //                                 type: e.type,
+            //                                 description: e.description
+            //                             },
+            //                             allDay: e.allDay,
+            //                             start: e.dateStart,
+            //                             end: e.dateEnd,
+            //                             color: e.color,
+            //                             textColor: e.textColor
+            //                         });
+            //                     // else if (e.type === 'dispo')
+            //                     //     dispos.push(dispo);
+            //                     // else if (e.type === 'rdv')
+            //                     //     rdvs.push(e);
+            //                 })
+            //                 all_events = evenements.concat(dispos).concat(rdvs);
+            //                 this.setState({ user_events: all_events });
+
+            //             }
+            //             console.log("fetch réussi : ", res.message);
+            //         })
+            //     }
+            //     else{
+            //         res.json().then(res => {
+            //             console.log("Mauvaise réponse réseau : ", res.message);
+            //         });
+                    
+            //     }
+            // })
+            // .catch(err => console.log("erreur lors de la récupération des events dans la BDD : " + err.message));
+    }
+
+    componentDidUpdate(prevProps, prevState){
+        if(this.props.eventType && this.props.eventType !== this.state.eventType)
+        {
+            this.setState({
+                eventType: this.props.eventType,
+                openModal: true,
+            });
+        }
+        if (prevProps && prevProps.mail !== this.props.mail)
+        {
+            this.setState({ mail: this.props.mail });
+        }
+
         //Récupération de tous les events dans la bdd
+        if (this.state.getEvents)
+        {
             this.setState({ getEvents: false });
             fetch(baseURL + "/events/get", {
                 method: 'POST',
@@ -50,7 +125,6 @@ export default class Agenda extends Component {
                     res.json().then((res) => {
                         if (res.all_events)
                         {
-                            console.log("events fetched : ", res.all_events);
                             let evenements = [];
                             let dispos = [];
                             let rdvs = [];
@@ -58,6 +132,7 @@ export default class Agenda extends Component {
                             res.all_events.forEach(e => {
                                 if (e.type === 'evenement')
                                     evenements.push({
+                                        id: e._id,
                                         title: e.objet,
                                         extendedProps: {
                                             user_mail: e.user_mail,
@@ -91,27 +166,8 @@ export default class Agenda extends Component {
                 }
             })
             .catch(err => console.log("erreur lors de la récupération des events dans la BDD : " + err.message));
-    }
-
-    componentDidUpdate(prevProps, prevState){
-        if(this.props.eventType && this.props.eventType !== this.state.eventType)
-        {
-            this.setState({
-                eventType: this.props.eventType,
-                openModal: true,
-            });
         }
-        if (prevProps && prevProps.mail !== this.props.mail)
-        {
-            this.setState({ mail: this.props.mail });
-        }
-        // console.log(this.state.user_events);
         
-        // if (prevState.user_events.length !== this.state.user_events.length)
-        // {
-
-        // }
-
     }
 
     clearState(){
@@ -154,7 +210,7 @@ export default class Agenda extends Component {
         this.clearState();
     }
 
-    handleSendEvents = (addInfo) => {
+    handleSaveEvent = (addInfo) => {
         let event = addInfo.event;
         let event_parsed = {
             user_mail: event.extendedProps.user_mail,
@@ -168,11 +224,12 @@ export default class Agenda extends Component {
             textColor: event.textColor,
             type: event.extendedProps.type
         }
-        console.log("avant fetch : " + event.color);
+        let id = event.id ? event.id : '';
+        
         fetch(baseURL + "/event/save", {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(event_parsed)
+            body: JSON.stringify({ event_parsed, id })
         })
         .then(res => {
             if (res.ok)
@@ -187,11 +244,10 @@ export default class Agenda extends Component {
         .catch(err => console.log("erreur lors de l'envoi d'un event dans BDD : " + err));
     }
 
-    // handleEventsSet = (events) => {
-    //     this.setState({
-    //         user_events: events
-    //     });
-    // }
+    handleChangeEvent = (changeInfo) => {
+        console.log(changeInfo.event);
+        this.handleSaveEvent(changeInfo);
+    }
 
     render() {
         const modal = this.state.openModal
@@ -199,6 +255,7 @@ export default class Agenda extends Component {
                             <AgendaModal 
                             handleCloseModal={this.handleCloseModal}
                             handleAddEvent={this.handleAddEvent}
+                            eventId={this.state.eventId}
                             startDate={this.state.startDate}
                             startTime={this.state.startTime}
                             endDate={this.state.endDate}
@@ -252,7 +309,9 @@ export default class Agenda extends Component {
                 editable={true}
                 select={this.handleDateSelection}
                 // eventsSet={this.handleEventsSet}
-                eventAdd={this.handleSendEvents}
+                eventAdd={this.handleSaveEvent}
+                eventChange={this.handleChangeEvent}
+                eventRemove={this.handleRemoveEvent}
                 />
             </div>
         )
