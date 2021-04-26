@@ -177,7 +177,7 @@ app.post('/contact', (req, res, next) => {
                 .catch(err => res.status(400).json({ message: err }));
             }
         }
-        //sinon, c'est qu'il doit juste etre modifié
+        //sinon, c'est qu'il doit juste être modifié
         else
         {
             let updateReq;
@@ -193,13 +193,36 @@ app.post('/contact', (req, res, next) => {
                     updateReq = await Rdv.replaceOne({ _id: id }, {...req.body.event_parsed});
                     break;
             };
+
         }
     });
 
-    //Enregistrement modifications d'event
-    app.post('/event/update', (req, res, next) => {
+    //Suppression d'un event
+    app.post('/event/remove', async (req, res, next) => {
+        const type = req.body.extendedProps.type;
+        const id = req.body.id;
+        let removeReq;
+        try {
+            switch(type)
+            {
+                case 'evenement':
+                    removeReq = await Evenement.deleteOne({ _id: id });
+                    break;
+                case 'dispo':
+                    removeReq = await Dispo.deleteOne({ _id: id });
+                    break;
+                case 'rdv':
+                    removeReq = await Rdv.deleteOne({ _id: id });
+                    break;
+            };
+            res.status(200).json({ message: "suppression correctement effectuée" });
+        }
+        catch(error){
+            res.status(400).json({ message: error.message });
+        }
+        
 
-    })
+    });
 
     app.post('/events/get', async (req, res, next) => {
         let all_events = [];

@@ -14,7 +14,7 @@ export default class AgendaModal extends Component {
         this.state = {
             eventType: this.props.eventType && this.props.eventType !== '' ? this.props.eventType : "dispo",
             eventId: this.props.eventId && this.props.eventId !== '' ? this.props.eventId : '',
-            allDay: false,
+            allDay: this.props.allDay ? this.props.allDay : false,
             startDate: '',
             startTime: '',
             endDate: '',
@@ -24,17 +24,23 @@ export default class AgendaModal extends Component {
             getProps: false, //pour ne récupérer les props qu'une fois
             alreadyFetched: false,
             other_users: [],
-            users_invites: [],
+            users_invited: this.props.modifier ? this.props.users_invited : [],
+            modifier: this.props.modifier
         }
     }
+
+    componentDidMount() {
+    }
+
     componentDidUpdate(){
-        const listProps = ["startDate", "startTime", "endDate", "endTime"];
+        const listProps = ["startDate", "startTime", "endDate", "endTime", "objet", "description", "users_invited", "eventId", "allDay"];
         if (!this.state.getProps)
         {
             for(let prop of listProps)
             {
+                console.log([prop] + " : " + this.props[prop]);
                 this.setState({
-                    [prop]: this.props[prop] ? this.props[prop] : ''
+                    [prop]: this.props[prop] ? this.props[prop] : this.state[prop]
                 });
             }
             this.setState({ getProps: true});
@@ -69,7 +75,7 @@ export default class AgendaModal extends Component {
             endTime: '',
             getProps: false,
             other_users: [],
-            users_invites: [],
+            users_invited: [],
         })
     }
 
@@ -95,6 +101,7 @@ export default class AgendaModal extends Component {
     //fonction fléchée pour accéder au this
     handleCheckboxChanges = (e) => {
         //pour l'instant seulement pour le allDay
+        console.log("checkboxchange");
         const name = e.target.name;
         const value = e.target.checked;
         if (value === true)
@@ -116,7 +123,7 @@ export default class AgendaModal extends Component {
             endDate: '',
             endTime: '',
             other_users: [],
-            users_invites: [],
+            users_invited: [],
         })
     }
 
@@ -130,26 +137,16 @@ export default class AgendaModal extends Component {
 
     handleSave = (e) => {
         e.preventDefault();
-        // const event = {
-        //     id: eventId++,
-        //     title: this.state.eventType === "dispo" ? "disponibilité" : this.state.objet,
-        //     extendedProps: {
-        //         type: this.state.eventType,
-        //         description: this.state.description ? this.state.description : ''
-        //     },
-        //     allDay: this.state.allDay,
-        //     start: (this.state.startDate + (!this.state.allDay ? "T" + this.state.startTime : '')),
-        //     end: (this.state.endDate + (!this.state.allDay ? "T" + this.state.endTime : ''))
-        // }
         let event = {};
+        
         if (this.state.eventType === 'evenement')
         {
             event = {
-                // id: moment().format('x'),
+                id: this.state.eventId,
                 title: this.state.objet,
                 extendedProps: {
                     user_mail: this.props.mail,
-                    users_invited: this.state.users_invites,
+                    users_invited: this.state.users_invited,
                     type: this.state.eventType,
                     description: this.state.description,
                 },
@@ -160,9 +157,30 @@ export default class AgendaModal extends Component {
                 textColor: "rgb(138, 74, 176)"
             }
         }
+        console.log("modal, event : ", event);
+        if (this.state.modifier)
+            this.props.handleChangeEvent(event);
+        else
+            this.props.handleAddEvent(event);
+
         this.clearState();
-        this.props.handleAddEvent(event);
         this.handleClose();
+    }
+
+    handleRemove = () => {
+        let text = {
+            dispo: "cette disponibilité",
+            rdv: "ce rendez-vous",
+            evenement: "cet évènement"
+        }
+        let eventText = "Êtes-vous sûrs de vouloir supprimer " + text[this.state.eventType] + " ?";
+        let confirmation = window.confirm(`${eventText}`);
+        if (confirmation)
+        {
+            this.props.handleRemove({ eventId: this.state.eventId });
+            this.clearState();
+            this.handleClose();
+        }
     }
 
     render(){
@@ -187,13 +205,9 @@ export default class AgendaModal extends Component {
                                 <option value="evenement">évènement</option>
                             </select>
                         </div>
-                        {/* <div id="all-day">
-                            <input type="checkbox" name="allDay" id="allDay" value="allDay" onChange={this.handleCheckboxChanges}/>
-                            <label htmlFor="allDay" name="labelAllDay" id="labelAllDay">Toute la journée</label>
-                        </div> */}
                         {this.renderEventTypeContent()}
                         <footer>
-                            {/* <button type="button" name="reset" className="modalButton" id="reset" onClick={this.handleReset}>Réinitialiser</button> */}
+                            <button type="button" name="remove" className={this.state.modifier ? "modalButton" : "modalButton-invisible"} id="remove" onClick={this.handleRemove}>Supprimer</button>
                             <input type="reset" name="reset" className="modalButton" value="Réinitialiser" onClick={this.handleReset}/>
                             <button type="submit" name="save" className="modalButton" id="save">Sauvegarder</button>
                         </footer>
@@ -212,7 +226,7 @@ export default class AgendaModal extends Component {
                     <tbody>
                         <tr className="tr_allday">
                             <td>
-                                <input type="checkbox" name="allDay" id="allDay" value="allDay" onChange={this.handleCheckboxChanges}/>
+                                <input type="checkbox" name="allDay" id="allDay" value="allDay" checked={this.state.allDay} onChange={this.handleCheckboxChanges}/>
                             </td>
                             <td>
                                 <label htmlFor="allDay" name="labelAllDay" id="labelAllDay">Toute la journée</label>
@@ -257,7 +271,7 @@ export default class AgendaModal extends Component {
                             <label htmlFor="inputObj">Objet : </label>
                         </td>
                         <td>
-                            <input type="text" name="objet" id="inputObj" maxLength="30" onChange={this.handleChanges} autoComplete="off" required />
+                            <input type="text" name="objet" id="inputObj" maxLength="30" value={this.state.objet} onChange={this.handleChanges} autoComplete="off" required />
                         </td>
                     </tr>
                     <tr className="tr_description">
@@ -294,19 +308,17 @@ export default class AgendaModal extends Component {
             let mailIndexes = [strInvite.indexOf("<") + 1 , strInvite.indexOf(">")]
             let strMailInvite = strInvite.substring(mailIndexes[0], mailIndexes[1]);
             let invite = this.state.other_users.find(user => user.mail === strMailInvite);
-            let alreadyInvited = this.state.users_invites.find(user => user._id === invite._id) ? true : false;
+            let alreadyInvited = this.state.users_invited.find(user => user._id === invite._id) ? true : false;
             //on remet la search bar à vide
             document.getElementById('searchBarInvite').value="";
             if (!alreadyInvited)
-                this.setState({ users_invites: [...this.state.users_invites, invite] });
+                this.setState({ users_invited: [...this.state.users_invited, invite] });
         }
 
     }
 
     generateListeInvites = () => {
-        // let liste = [];
-
-        let liste = this.state.users_invites;
+        let liste = this.state.users_invited;
         //on trie dans l'ordre alphabétique par NOM
         //la fonction sort place el1 avant el2 si la foncion de tri renvoie un nb < 0,
         //place el2 avant el1 si la fonction de tri renvoie un nb > 0
@@ -323,21 +335,6 @@ export default class AgendaModal extends Component {
         });
         //on retourne le tableau sous forme de string en enlevant les virgules
         return listeSorted.toString().replaceAll(',', '');
-        // this.state.users_invites.forEach((user) => {
-        //     liste.push(
-        //         user.prenom + " " + user.nom + " <" + user.mail + ">\n"
-        //     );
-        // });
-
-        // this.state.users_invites.forEach((user) => {
-        //     list.push(
-        //     <li key={user._id} className="li_user_invited">
-        //         {user.prenom + " " + user.nom + " <" + user.mail + ">"}
-        //     </li>
-        //     );
-        // })
-
-        // return liste;
     }
     //fonction pour afficher les informations à remplir en fontion du type d'objet à créer
     //fonction fléchée pour accéder au this
@@ -348,34 +345,6 @@ export default class AgendaModal extends Component {
         if(this.state.eventType === false || this.state.eventType === "dispo")
         {
             content = (
-                // <div className="eventTypeContent">
-                //     <table className="tableEventTypeContent">
-                //         <tbody>
-                //             <tr className="startDate">
-                //                 <td>
-                //                     <label htmlFor="startDate">Date de début : </label>
-                //                 </td>
-                //                 <td>
-                //                     <input type="date" name="startDate" onChange={this.handleChanges}
-                //                     value={this.state.startDate} />
-                //                     <input type="time" name="startTime" onChange={this.handleChanges}
-                //                     value={this.state.startTime} disabled={this.state.allDay}/>
-                //                 </td>
-                //             </tr>
-                //             <tr className="endDate">
-                //                 <td>
-                //                     <label htmlFor="endDate">Date de fin : </label>
-                //                 </td>
-                //                 <td>
-                //                     <input type="date" name="endDate" onChange={this.handleChanges}
-                //                     value={this.state.endDate} />
-                //                     <input type="time" name="endTime" onChange={this.handleChanges}
-                //                     value={this.state.endTime} disabled={this.state.allDay}/>
-                //                 </td>
-                //             </tr>
-                //         </tbody>
-                //     </table>
-                // </div>
                 <div className="eventTypeContent">
                     {this.renderEventDate()}
                 </div>
@@ -389,28 +358,6 @@ export default class AgendaModal extends Component {
                     {this.renderEventDate()}
                     <table className="tableEventTypeContent_evenement">
                         <tbody>
-                            {/* <tr className="startDate">
-                                <td>
-                                    <label htmlFor="startDate">Date de début : </label>
-                                </td>
-                                <td>
-                                    <input type="date" name="startDate" onChange={this.handleChanges}
-                                    value={this.state.startDate} />
-                                    <input type="time" name="startTime" onChange={this.handleChanges}
-                                    value={this.state.startTime} disabled={this.state.allDay}/>
-                                </td>
-                            </tr>
-                            <tr className="endDate">
-                                <td>
-                                    <label htmlFor="endDate">Date de fin : </label>
-                                </td>
-                                <td>
-                                    <input type="date" name="endDate" onChange={this.handleChanges}
-                                    value={this.state.endDate} />
-                                    <input type="time" name="endTime" onChange={this.handleChanges}
-                                    value={this.state.endTime} disabled={this.state.allDay}/>
-                                </td>
-                            </tr> */}
                             <tr className="searchInvites">
                                 <td>
                                     <label htmlFor="labelSearchInvites">Personnes à inviter à l'évènement : </label>
@@ -440,17 +387,6 @@ export default class AgendaModal extends Component {
                                 <td className="liste_invites" id="liste_invites_content" colSpan="2">
                                     <textarea name="liste_invites" id="liste_invites" readOnly disabled
                                     value={this.generateListeInvites()} />
-
-                                    {/* <div id="liste_invites">
-                                        <ul id="ul_invites">
-                                            {this.generateListeInvites()}
-                                        </ul>
-                                    </div> */}
-
-                                    {/* <textarea name="liste_invites" id="liste_invites" readOnly>
-                                        
-                                    </textarea> */}
-
                                 </td>
                             </tr>
                         </tbody>

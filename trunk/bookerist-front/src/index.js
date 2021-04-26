@@ -2,15 +2,9 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 // import reportWebVitals from './reportWebVitals'
 import App from './App';
-// import HeaderLoggedIn from './HeaderLoggedIn';
-// import Test from './Test';
-// import Header from './Header'
-// import Accueil from './Accueil'
-// import Inscription from './Inscription';
-// import Contact from './Contact';
-// import ForgotPass from './ForgotPass';
-// import Parametre from './Parametre'
+
 // import AgendaModal from './AgendaModal';
+// import ClickEventMenu from './ClickEventMenu';
 
 ReactDOM.render(
   <App />,
