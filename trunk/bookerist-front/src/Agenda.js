@@ -196,11 +196,6 @@ export default class Agenda extends Component {
         event.remove();
     }
 
-    removeInvitation = ({eventId}) => {
-        let event = this.calendarRef.current.getApi().getEventById(eventId);
-
-    }
-
     handleEventRemoved = (removeInfo) => {
         let event = removeInfo.event
         if (event.startEditable)
