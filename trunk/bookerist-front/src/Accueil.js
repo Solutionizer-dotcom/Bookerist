@@ -3,6 +3,8 @@ import './Accueil.css';
 import './Button.css';
 //import Calendrier from './Calendrier';
 
+const baseURL = "http://localhost:3001";
+
 class Accueil extends Component {
     constructor(props){
         super(props);
@@ -11,8 +13,6 @@ class Accueil extends Component {
             mail: '', 
             mdp: ''
         };
-
-        this.baseURL = "http://localhost:3001";
     }
 
     gotoInscription = () =>{
@@ -39,7 +39,7 @@ class Accueil extends Component {
             mdp: this.state.mdp
         }
 
-        fetch(this.baseURL + "/connect", {
+        fetch(baseURL + "/connect", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
