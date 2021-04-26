@@ -176,6 +176,10 @@ textarea#liste_invites
 {
     display: none;
 }
+.modalButton[disabled="true"]
+{
+    background-color: grey;
+}
 @keyframes modalArrival
 {
     from {

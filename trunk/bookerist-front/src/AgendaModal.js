@@ -3,7 +3,6 @@ import './AgendaModal.css';
 import './Button.css';
 // import moment from 'moment';
 
-// let eventId = 0;
 const baseURL = "http://localhost:3001";
 //Composant permettant d'afficher le modal pour créer un évènement dans l'agenda
 export default class AgendaModal extends Component {
@@ -12,6 +11,7 @@ export default class AgendaModal extends Component {
 
         //Définission de l'état, par défaut le eventType sera disponibilité
         this.state = {
+            editable: this.props.editable,
             eventType: this.props.eventType && this.props.eventType !== '' ? this.props.eventType : "dispo",
             eventId: this.props.eventId && this.props.eventId !== '' ? this.props.eventId : '',
             allDay: this.props.allDay ? this.props.allDay : false,
@@ -23,6 +23,7 @@ export default class AgendaModal extends Component {
             description: '',
             getProps: false, //pour ne récupérer les props qu'une fois
             alreadyFetched: false,
+            mail: this.props.mail,
             other_users: [],
             users_invited: this.props.modifier ? this.props.users_invited : [],
             modifier: this.props.modifier
@@ -33,12 +34,11 @@ export default class AgendaModal extends Component {
     }
 
     componentDidUpdate(){
-        const listProps = ["startDate", "startTime", "endDate", "endTime", "objet", "description", "users_invited", "eventId", "allDay"];
+        const listProps = ["startDate", "startTime", "endDate", "endTime", "objet", "description", "users_invited", "eventId", "allDay", "editable", "mail"];
         if (!this.state.getProps)
         {
             for(let prop of listProps)
             {
-                console.log([prop] + " : " + this.props[prop]);
                 this.setState({
                     [prop]: this.props[prop] ? this.props[prop] : this.state[prop]
                 });
@@ -101,7 +101,6 @@ export default class AgendaModal extends Component {
     //fonction fléchée pour accéder au this
     handleCheckboxChanges = (e) => {
         //pour l'instant seulement pour le allDay
-        console.log("checkboxchange");
         const name = e.target.name;
         const value = e.target.checked;
         if (value === true)
@@ -136,9 +135,10 @@ export default class AgendaModal extends Component {
    
 
     handleSave = (e) => {
-        e.preventDefault();
+        if (e)
+            e.preventDefault();
         let event = {};
-        
+
         if (this.state.eventType === 'evenement')
         {
             event = {
@@ -157,7 +157,6 @@ export default class AgendaModal extends Component {
                 textColor: "rgb(138, 74, 176)"
             }
         }
-        console.log("modal, event : ", event);
         if (this.state.modifier)
             this.props.handleChangeEvent(event);
         else
@@ -168,19 +167,44 @@ export default class AgendaModal extends Component {
     }
 
     handleRemove = () => {
-        let text = {
-            dispo: "cette disponibilité",
-            rdv: "ce rendez-vous",
-            evenement: "cet évènement"
-        }
-        let eventText = "Êtes-vous sûrs de vouloir supprimer " + text[this.state.eventType] + " ?";
-        let confirmation = window.confirm(`${eventText}`);
-        if (confirmation)
+        if (this.state.editable === true)
         {
-            this.props.handleRemove({ eventId: this.state.eventId });
-            this.clearState();
-            this.handleClose();
+            let text = {
+                dispo: "cette disponibilité",
+                rdv: "ce rendez-vous",
+                evenement: "cet évènement"
+            }
+            let eventText = "Êtes-vous sûrs de vouloir supprimer " + text[this.state.eventType] + " ?";
+            let confirmation = window.confirm(`${eventText}`);
+            if (confirmation)
+            {
+                this.props.handleRemove({ eventId: this.state.eventId });
+                this.clearState();
+                this.handleClose();
+            }
         }
+        else
+        {
+            let text = {
+                rdv: "ce rendez-vous",
+                evenement: "cet évènement"
+            }
+            let eventText = "Êtes-vous sûrs de vouloir annuler votre participation à " + text[this.state.eventType] + " ?";
+            let confirmation = window.confirm(`${eventText}`);
+            if (confirmation)
+            {
+                let users_invited = this.state.users_invited;
+                let user = users_invited.find(user => user.mail === this.state.mail);
+                let index = users_invited.indexOf(user);
+                users_invited.splice(index, 1);
+                this.setState({ users_invited });
+                this.handleSave();
+                this.props.handleRemove({ eventId: this.state.eventId });
+                this.clearState();
+                this.handleClose();
+            }
+        }
+        
     }
 
     render(){
@@ -199,7 +223,7 @@ export default class AgendaModal extends Component {
                     <form id="formInfosEvent" onSubmit={this.handleSave}>
                         <div id="type">
                             <label htmlFor="eventType" id="labelType">Type : </label>
-                            <select name="eventType" className="listeType" value={this.state.eventType} id={eventType} onChange={this.handleChanges}>
+                            <select name="eventType" className="listeType" value={this.state.eventType} id={eventType} disabled={!this.state.editable} onChange={this.handleChanges}>
                                 <option value="dispo">disponibilité</option>
                                 <option value="rdv">rendez-vous</option>
                                 <option value="evenement">évènement</option>
@@ -208,8 +232,8 @@ export default class AgendaModal extends Component {
                         {this.renderEventTypeContent()}
                         <footer>
                             <button type="button" name="remove" className={this.state.modifier ? "modalButton" : "modalButton-invisible"} id="remove" onClick={this.handleRemove}>Supprimer</button>
-                            <input type="reset" name="reset" className="modalButton" value="Réinitialiser" onClick={this.handleReset}/>
-                            <button type="submit" name="save" className="modalButton" id="save">Sauvegarder</button>
+                            <input type="reset" name="reset" className="modalButton" value="Réinitialiser" disabled={!this.state.editable} onClick={this.handleReset}/>
+                            <button type="submit" name="save" className="modalButton" id="save" disabled={!this.state.editable}>Sauvegarder</button>
                         </footer>
                     </form>
                 </div>
@@ -226,7 +250,7 @@ export default class AgendaModal extends Component {
                     <tbody>
                         <tr className="tr_allday">
                             <td>
-                                <input type="checkbox" name="allDay" id="allDay" value="allDay" checked={this.state.allDay} onChange={this.handleCheckboxChanges}/>
+                                <input type="checkbox" name="allDay" id="allDay" value="allDay" checked={this.state.allDay} disabled={!this.state.editable} onChange={this.handleCheckboxChanges}/>
                             </td>
                             <td>
                                 <label htmlFor="allDay" name="labelAllDay" id="labelAllDay">Toute la journée</label>
@@ -238,9 +262,9 @@ export default class AgendaModal extends Component {
                             </td>
                             <td>
                                 <input type="date" name="startDate" onChange={this.handleChanges}
-                                value={this.state.startDate} required />
+                                value={this.state.startDate} disabled={!this.state.editable} required />
                                 <input type="time" name="startTime" onChange={this.handleChanges}
-                                value={this.state.startTime} disabled={this.state.allDay}/>
+                                value={this.state.startTime} disabled={!this.state.editable || this.state.allDay}/>
                             </td>
                         </tr>
                         <tr className="tr_endDate">
@@ -249,9 +273,9 @@ export default class AgendaModal extends Component {
                             </td>
                             <td>
                                 <input type="date" name="endDate" onChange={this.handleChanges}
-                                value={this.state.endDate} required />
+                                value={this.state.endDate} disabled={!this.state.editable} required />
                                 <input type="time" name="endTime" onChange={this.handleChanges}
-                                value={this.state.endTime} disabled={this.state.allDay}/>
+                                value={this.state.endTime} disabled={!this.state.editable || this.state.allDay}/>
                             </td>
                         </tr>
                     </tbody>
@@ -271,7 +295,7 @@ export default class AgendaModal extends Component {
                             <label htmlFor="inputObj">Objet : </label>
                         </td>
                         <td>
-                            <input type="text" name="objet" id="inputObj" maxLength="30" value={this.state.objet} onChange={this.handleChanges} autoComplete="off" required />
+                            <input type="text" name="objet" id="inputObj" maxLength="30" value={this.state.objet} autoComplete="off" disabled={!this.state.editable} onChange={this.handleChanges}  required />
                         </td>
                     </tr>
                     <tr className="tr_description">
@@ -279,7 +303,7 @@ export default class AgendaModal extends Component {
                             <label htmlFor="inputDescription">Description : </label>
                         </td>
                         <td>
-                            <textarea name="description" id="inputDescription" maxLength="130" value={this.state.description} onChange={this.handleChanges} />
+                            <textarea name="description" id="inputDescription" maxLength="130" value={this.state.description} disabled={!this.state.editable} onChange={this.handleChanges} />
                         </td>
                     </tr>
                 </tbody>
@@ -364,7 +388,7 @@ export default class AgendaModal extends Component {
                                 </td>
                                 <td>
                                     <input list="usersList" name="searchBarInvite" className="searchBar" id="searchBarInvite"
-                                    onChange={this.handleChanges}
+                                    disabled={!this.state.editable} onChange={this.handleChanges}
                                     autoComplete="off"
                                     />
 

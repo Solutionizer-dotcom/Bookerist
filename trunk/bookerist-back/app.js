@@ -145,7 +145,7 @@ app.post('/contact', (req, res, next) => {
     }
     sendMail(options)
     .then((result) => {
-        console.log('mail envoyé : ', result);
+        // console.log('mail envoyé : ', result);
         res.status(200).json({ message: 'Message bien envoyé. Nous vous répondrons dans les plus brefs délais.' });
     })
     .catch((error) => {
@@ -226,17 +226,66 @@ app.post('/contact', (req, res, next) => {
 
     app.post('/events/get', async (req, res, next) => {
         let all_events = [];
+        let all_events_invited = [];
         const mail = req.body.mail;
         let evenements = Evenement.find({ user_mail: mail });
+        let evenements_invited = Evenement.find({ 'users_invited.mail': mail });
         let dispos = Dispo.find({ user_mail: mail });
-        let rdv = Rdv.find({ user_mail: mail }) //ajouter || user_dispo_mail: mail
+        let rdv = Rdv.find({ user_mail: mail });
+        let rdv_invited = Rdv.find({ user_dispo_mail: mail });
 
+        //exécution des requêtes + parsing
         evenements = await evenements.exec();
+        evenements = evenements.map((e) => {
+            return ({
+                editable: true,
+                id: e._id,
+                title: e.objet,
+                extendedProps: {
+                    user_mail: e.user_mail,
+                    users_invited: e.users_invited,
+                    type: e.type,
+                    description: e.description
+                },
+                allDay: e.allDay,
+                start: e.dateStart,
+                end: e.dateEnd,
+                color: e.color,
+                textColor: e.textColor,
+            });
+        })
+        evenements_invited = await evenements_invited.exec();
+        evenements_invited = evenements_invited.map((e) => {
+            return ({
+                editable: false,
+                id: e._id,
+                title: e.objet,
+                extendedProps: {
+                    user_mail: e.user_mail,
+                    users_invited: e.users_invited,
+                    type: e.type,
+                    description: e.description
+                },
+                allDay: e.allDay,
+                start: e.dateStart,
+                end: e.dateEnd,
+                color: e.color,
+                textColor: e.textColor,
+            });
+        })
+
+
+        
+
+
         dispos = await dispos.exec();
+
         rdv = await rdv.exec();
+        rdv_invited = await rdv_invited.exec();
 
         all_events = evenements.concat(dispos).concat(rdv);
-
+        all_events_invited = evenements_invited.concat(rdv_invited);
+        all_events = all_events.concat(all_events_invited);
         if (all_events.length > 0)
             res.status(200).json({ all_events, message: 'récupération réussie' });
         else
