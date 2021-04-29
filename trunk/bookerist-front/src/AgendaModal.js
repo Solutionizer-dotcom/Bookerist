@@ -242,7 +242,7 @@ export default class AgendaModal extends Component {
                             <button type="button" name="toggleInvites" className={this.state.editable ? "modalButton" : "modalButton--invisible"} id="toggleInvites" onClick={this.showInvites} disabled={!this.state.editable}>
                                 {this.state.invitesVisible ? "Ne pas ajouter de participant" : "Ajouter des participants"}
                             </button>
-                            <button type="button" name="remove" className={this.state.modifier ? "modalButton" : "modalButton-invisible"} id="remove" onClick={this.handleRemove}>Supprimer</button>
+                            <button type="button" name="remove" className={this.state.modifier ? "modalButton" : "modalButton--invisible"} id="remove" onClick={this.handleRemove}>Supprimer</button>
                             <input type="reset" name="reset" className="modalButton" value="Réinitialiser" disabled={!this.state.editable} onClick={this.handleReset}/>
                             <button type="submit" name="save" className="modalButton" id="save" disabled={!this.state.editable}>Sauvegarder</button>
                         </footer>
