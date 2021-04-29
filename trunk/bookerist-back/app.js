@@ -250,7 +250,7 @@ app.post('/contact', (req, res, next) => {
                 allDay: e.allDay,
                 start: e.dateStart,
                 end: e.dateEnd,
-                color: e.color,
+                color: 'rgb(177, 214, 153)',
                 textColor: e.textColor,
             });
         })
