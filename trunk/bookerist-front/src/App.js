@@ -11,6 +11,8 @@ import ForgotPass from './ForgotPass';
 // import Calendrier from './Calendrier';
 import Parametre from './Parametre';
 
+const API = "https://bookerist-back.herokuapp.com";
+
 class App extends Component {
   constructor(props){
     super(props);
@@ -111,7 +113,6 @@ class App extends Component {
   }
 
   handleEventType = ({ eventType }) => {
-    console.log("App, type: " + eventType);
     this.setState({ eventType });
   }
 
@@ -161,6 +162,7 @@ class App extends Component {
       loggedIn
       ? page = (
       <AccueilLoggedIn
+      API={API}
       menuOpened={this.state.menuOpened}
       profilOpened={this.state.profilOpened}
       eventType={this.state.eventType}
@@ -171,6 +173,7 @@ class App extends Component {
       )
       : page = (
       <Accueil 
+      API={API}
       handlePage={this.handlePage}
       setUserInfos={this.setUserInfos}
       connect={() => this.handleLoginChange(true)} />
@@ -179,17 +182,22 @@ class App extends Component {
     if (inInscription){
       page = (
         <Inscription 
-        gotoMain={() => this.handlePage({ inAccueil: true })} />
+        API={API}
+        gotoMain={() => this.handlePage({ inAccueil: true })}
+        />
       );
     }
     if (inForgotPass){
       page = (
-        <ForgotPass />
+        <ForgotPass 
+        API={API}
+        />
       );
     }
     if (inContact){
       page = (
         <Contact 
+        API={API}
         prenom={prenom}
         nom={nom}
         mail={mail}
@@ -200,6 +208,7 @@ class App extends Component {
     if (inParams){
       page = (
         <Parametre
+        API={API}
         mail={mail}
         handleChangeParams = {this.handleChangeParams}
         />

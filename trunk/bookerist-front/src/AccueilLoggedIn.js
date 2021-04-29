@@ -2,9 +2,6 @@ import './AccueilLoggedIn.css';
 import React, { Component } from 'react';
 import Agenda from './Agenda';
 
-
-// const baseURL = "http://localhost:3001";
-
 class AccueilLoggedIn extends Component {
   constructor(props){
     super(props);
@@ -14,6 +11,7 @@ class AccueilLoggedIn extends Component {
       menuOpened: false,
       profilOpened: false,
     }
+    this.API= this.props.API
   }
   
   componentDidUpdate(prevProps){
@@ -46,6 +44,7 @@ class AccueilLoggedIn extends Component {
     return (
     <div id="accLoggedIn" className={divClass}>
       <Agenda
+      API={this.API}
       eventType={this.state.eventType}
       clearEventType={this.clearEventType}
       mail={this.state.mail}

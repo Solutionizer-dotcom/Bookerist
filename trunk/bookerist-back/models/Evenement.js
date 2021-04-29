@@ -7,7 +7,7 @@ const evenementSchema = mongoose.Schema({
     dateStart: { type: String, required: true },
     dateEnd: { type: String, required: true },
     objet: { type: String, required: true },
-    description: { type: String, required: true },
+    description: { type: String, required: false },
     color: { type: String },
     textColor: { type: String },
     type: { type: String }

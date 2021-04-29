@@ -8,7 +8,9 @@ import React, { Component } from 'react'
 import './Agenda.css';
 import AgendaModal from './AgendaModal';
 
-const baseURL = "http://localhost:3001";
+const events_get = "/events/get";
+const event_save = "/event/save";
+const event_remove = "/event/remove";
 
 export default class Agenda extends Component {
     constructor(props){
@@ -34,6 +36,7 @@ export default class Agenda extends Component {
             user_events: [],
             getEvents: false, //doit-on récupérer les evenements dans la bdd ?
         }
+        this.API = this.props.API;
     }
     calendarRef = React.createRef(); //on donne cette reference au calendrier pour toujours l'avoir et pouvoir utiliser les methodes de l'api
 
@@ -59,7 +62,7 @@ export default class Agenda extends Component {
         if (this.state.getEvents)
         {
             this.setState({ getEvents: false });
-            fetch(baseURL + "/events/get", {
+            fetch(this.API + events_get, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -152,7 +155,7 @@ export default class Agenda extends Component {
             type: event.extendedProps.type
         }
         let id = event.id;
-        fetch(baseURL + "/event/save", {
+        fetch(this.API + event_save, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ event_parsed, id })
@@ -200,7 +203,7 @@ export default class Agenda extends Component {
         let event = removeInfo.event
         if (event.startEditable)
         {
-            fetch(baseURL + "/event/remove", {
+            fetch(this.API + event_remove, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(event)
@@ -242,6 +245,7 @@ export default class Agenda extends Component {
         const modal = this.state.openModal
                         ?(
                             <AgendaModal 
+                            API={this.API}
                             handleCloseModal={this.handleCloseModal}
                             handleAddEvent={this.handleAddEvent}
                             handleRemove={this.removeEvent}

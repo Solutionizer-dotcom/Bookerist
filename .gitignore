@@ -19,3 +19,7 @@ sketch
 
 ### dotenv package ###
 #.env
+
+### sous dossiers git ###
+trunk/bookerist-front/.git*
+trunk/bookerist-back/.git*

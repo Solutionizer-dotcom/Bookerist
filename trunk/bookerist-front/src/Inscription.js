@@ -4,7 +4,7 @@ import reactDom from 'react-dom'
 import App from './App'
 import './Button.css'
 
-const baseURL = "http://localhost:3001";
+const inscription = "/inscription";
 
 class Inscription extends Component {
     constructor(props){
@@ -18,6 +18,8 @@ class Inscription extends Component {
             mdp: '',
             mdp2: ''
         }
+        
+        this.API = this.props.API;
     }
 
     //fx flechée pour acceder au this
@@ -65,7 +67,7 @@ class Inscription extends Component {
                 mail: mail,
                 mdp: mdp
             };
-            fetch(baseURL + "/inscription", {
+            fetch(this.API + inscription, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

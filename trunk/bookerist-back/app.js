@@ -1,5 +1,6 @@
 const express = require('express'); //serveur express
 const app = express();
+const path = require('path');
 const mongoose = require('mongoose'); //utilitaire pour mongodb
 const bcrypt = require('bcrypt'); //pour hasher les mdp
 const cors = require('cors');
@@ -27,7 +28,6 @@ mongoose.connect('mongodb+srv://bzalugas:Bookerist2021@cluster0.cjrzx.mongodb.ne
 
     
 app.options('*', cors());
-
 
 //autoriser les connexions à l'api depuis n'importe où
 app.use((req, res, next) => {
@@ -292,17 +292,45 @@ app.post('/contact', (req, res, next) => {
             res.status(200).json({ message: 'base vide' })
     });
 
-// app.post('/forgotPass', async (req,res,next)=>{
+    function randomPass(length) {
+        var result           = [];
+        var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        var charactersLength = characters.length;
+        for ( var i = 0; i < length; i++ ) {
+          result.push(characters.charAt(Math.floor(Math.random() * 
+     charactersLength)));
+       }
+       return result.join('');
+    }
+
+app.post('/forgotPass', async (req,res,next)=>{ 
+    const newForgotPass = randomPass(8);
+    const hashForgotPass = await hashMdp(newForgotPass)
+    const resultat = await User.updateOne({mail: req.body.mail}, {mdp: hashForgotPass })
+
     
+    if(resultat.n > 0){
+        const options = {
+            from: 'Bookerist <solutionizer.bookerist@gmail.com>',
+            to: req.body.mail,
+            objet: 'Réinitialisation du mot de passe Bookerist',
+            message: 'Bonjour, voici votre nouveau mot de passe : ' + newForgotPass
+        }
 
-
-//     const options = {
-//         from: 'Bookerist <solutionizer.bookerist@gmail.com>',
-//         to: req.body.mail,
-//         objet: 'Réinitialisation du mot de passe Bookerist',
-//         message: 'Bonjour, voici votre nouveau mot de passe : ' + mdp
-//     }
-// })
+        sendMail(options)
+        .then((result) => {
+            console.log("mail envoyé : ", result)
+            res.status(200).json({ message: "Le nouveau mot de passe vous a été envoyé par mail." });
+        })
+        .catch((error) => {
+            console.log('erreur : ', error.message);
+            res.json({ message: "Erreur lors de l'envoi du message." });
+        });
+    }
+    else{
+        res.status(400).json({message : "Le mail n'éxiste pas."})
+    }
+})
 
 app.post("/params", async (req, res, next) => 
 {
@@ -318,68 +346,32 @@ app.post("/params", async (req, res, next) =>
                 const mdpIsValid = await compareMdp(req.body.mdp, user.mdp);
                 if(mdpIsValid)
                 {
-                    let changeMdp = req.body.changeMdp
-                    if(req.body.changeMail && req.body.changeMdp)
+                    let changeMailSuccess = false;
+                    let changeMdpSuccess = false;
+                    if (req.body.changeMail)
                     {
-                        User.find({mail: req.body.newMail})
-                        .then(async (user) => 
-                            {
-                                if (user.length > 0)
-                                {
-                                    res.status(400).json({ message: 'Le nouveau mail existe déjà.' })
-                                }
-                                else
-                                {
-                                    const hashPassword = await hashMdp(req.body.newMdp);
-                                    User.updateOne({mail: req.body.mail}, {mail: req.body.newMail, mdp: hashPassword})
-                                    .then(() => {
-                                        res.status(200).json({ message: "Vos informations personnelles ont été mises à jour", mail: req.body.newMail })
-                                    })
-                                    .catch(error => {
-                                        res.status(400).json({ message : JSON.stringify(error) })
-                                    })
-                                }
-                            })
-                        
-                        .catch(error => res.status(400).json({ message : JSON.stringify(error) }))          
-                        
-                    }    
-                
-                    else if(req.body.changeMail)
-                    {
-                        User.findOne({mail: req.body.newMail})
-                        .then(async user => 
-                            {
-                                if (user !== null)
-                                    res.status(400).json({ message: 'Le nouveau mail existe déjà.' })
-                                else
-                                {
-                                    User.updateOne({mail: req.body.mail}, {mail: req.body.newMail})
-                                    .then(() => {
-                                        res.status(200).json({ message: "Vos informations personnelles ont été mises à jour", mail: req.body.newMail })
-                                    })
-                                    .catch(error => {
-                                        res.status(400).json({ message : JSON.stringify(error) })
-                                    })
-                                }
-                            })
-                        .catch(error => 
+                        let userWithNewMail = await User.findOne({ mail: req.body.newMail }).exec();
+                        if (userWithNewMail !== null)
                         {
-                            res.status(400).json({ message : JSON.stringify(error) })
-                        })
+                            res.status(400).json({ message: 'Le nouveau mail existe déjà.' });
+                            changeMailSuccess = false;
+                        }
+                        else 
+                        {
+                            await User.updateOne({ mail: req.body.mail }, { mail: req.body.newMail }).exec();
+                            changeMailSuccess = true;
+                        }
                     }
-                    
-                    else if(changeMdp)
+                    if (req.body.changeMdp)
                     {
                         const hashPassword = await hashMdp(req.body.newMdp);
-                        User.updateOne({mail: req.body.mail}, {mdp: hashPassword})
-                        .then(() => {
-                            res.status(200).json({ message: "Vos informations personnelles ont été mises à jour" })
-                        })
-                        .catch(error => {
-                            res.status(400).json({ message : JSON.stringify(error) })
-                        })
+                        await User.updateOne({ mail: req.body.mail }, { mdp: hashPassword }).exec();
+                        changeMdpSuccess = true;
                     }
+                    res.status(200).json({
+                        message: "Vos informations personnelles ont été mises à jour",
+                        mail: req.body.changeMail && changeMailSuccess ? req.body.newMail : req.body.mail
+                    });                    
                 }
                 else
                 {
@@ -392,12 +384,6 @@ app.post("/params", async (req, res, next) =>
 })
 
 
-
-
-
-
-
-
 app.post('/users/get', (req, res, next) => {
     //Recherche de tous les utilisateurs exceptés ceux dont le mail correspond au mail de l'utilisateur courrant.
     User.find({ mail: { $not: { $regex: req.body.mail } } }, '_id prenom nom mail')
@@ -406,4 +392,5 @@ app.post('/users/get', (req, res, next) => {
     })
     .catch(error => res.status(400).json({ error }) );
 })
+
 module.exports = app;

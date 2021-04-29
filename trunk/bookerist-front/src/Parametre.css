@@ -16,6 +16,8 @@ div.parametre
     font-size: 20px;
     position: relative;
     margin-top: 10px;
+    width: 60%;
+    text-align: center;
 }
 .bouton_modifier
 {
@@ -37,6 +39,8 @@ div.parametre
     font-size: 20px;
     position: relative;
     margin-top: 20px;
+    width: 50%;
+    text-align: center;
 }
 .inputParamPass#mdp
 {

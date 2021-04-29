@@ -3,7 +3,8 @@ import './AgendaModal.css';
 import './Button.css';
 // import moment from 'moment';
 
-const baseURL = "http://localhost:3001";
+const users_get = "/users/get";
+
 //Composant permettant d'afficher le modal pour créer un évènement dans l'agenda
 export default class AgendaModal extends Component {
     constructor(props){
@@ -28,6 +29,7 @@ export default class AgendaModal extends Component {
             users_invited: this.props.modifier ? this.props.users_invited : [],
             modifier: this.props.modifier
         }
+        this.API = this.props.API;
     }
 
     componentDidMount() {
@@ -47,7 +49,7 @@ export default class AgendaModal extends Component {
         }
         if ((this.state.eventType === "evenement" || this.state.eventType === "rdv") && !this.state.alreadyFetched)
         {
-            fetch(baseURL + "/users/get", {
+            fetch(this.API + users_get, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -258,7 +260,7 @@ export default class AgendaModal extends Component {
                         </tr>
                         <tr className="tr_startDate">
                             <td>
-                                <label htmlFor="startDate">Date de début : </label>
+                                <label htmlFor="startDate" className="required-field">Date de début</label>
                             </td>
                             <td>
                                 <input type="date" name="startDate" onChange={this.handleChanges}
@@ -269,7 +271,7 @@ export default class AgendaModal extends Component {
                         </tr>
                         <tr className="tr_endDate">
                             <td>
-                                <label htmlFor="endDate">Date de fin : </label>
+                                <label htmlFor="endDate" className="required-field">Date de fin</label>
                             </td>
                             <td>
                                 <input type="date" name="endDate" onChange={this.handleChanges}
@@ -292,7 +294,7 @@ export default class AgendaModal extends Component {
                 <tbody>
                     <tr className="tr_obj">
                         <td>
-                            <label htmlFor="inputObj">Objet : </label>
+                            <label htmlFor="inputObj" className="required-field">Objet</label>
                         </td>
                         <td>
                             <input type="text" name="objet" id="inputObj" maxLength="30" value={this.state.objet} autoComplete="off" disabled={!this.state.editable} onChange={this.handleChanges}  required />
@@ -300,7 +302,7 @@ export default class AgendaModal extends Component {
                     </tr>
                     <tr className="tr_description">
                         <td>
-                            <label htmlFor="inputDescription">Description : </label>
+                            <label htmlFor="inputDescription">Description</label>
                         </td>
                         <td>
                             <textarea name="description" id="inputDescription" maxLength="130" value={this.state.description} disabled={!this.state.editable} onChange={this.handleChanges} />
@@ -384,7 +386,7 @@ export default class AgendaModal extends Component {
                         <tbody>
                             <tr className="searchInvites">
                                 <td>
-                                    <label htmlFor="labelSearchInvites">Personnes à inviter à l'évènement : </label>
+                                    <label htmlFor="labelSearchInvites">Personnes à inviter à l'évènement</label>
                                 </td>
                                 <td>
                                     <input list="usersList" name="searchBarInvite" className="searchBar" id="searchBarInvite"
@@ -404,7 +406,7 @@ export default class AgendaModal extends Component {
                             </tr>
                             <tr>
                                 <td className="liste_invites" id="liste_invites_label" colSpan="2">
-                                    <label htmlFor="liste_invites">Personnes invitées : </label>
+                                    <label htmlFor="liste_invites">Personnes invitées</label>
                                 </td>
                             </tr>
                             <tr id="tr_liste_invites_content">

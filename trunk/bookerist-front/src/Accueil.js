@@ -3,7 +3,7 @@ import './Accueil.css';
 import './Button.css';
 //import Calendrier from './Calendrier';
 
-const baseURL = "http://localhost:3001";
+const connect = "/connect";
 
 class Accueil extends Component {
     constructor(props){
@@ -13,10 +13,15 @@ class Accueil extends Component {
             mail: '', 
             mdp: ''
         };
+        this.API = this.props.API;
     }
 
     gotoInscription = () =>{
         this.props.handlePage({ inInscription: true });
+    }
+    gotoForgotPass = (event) =>{
+        event.preventDefault()
+        this.props.handlePage({ inForgotPass: true });
     }
 
     saveChanges = event => {
@@ -39,7 +44,7 @@ class Accueil extends Component {
             mdp: this.state.mdp
         }
 
-        fetch(baseURL + "/connect", {
+        fetch(this.API + connect, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -74,7 +79,7 @@ class Accueil extends Component {
 
                             <input type="submit" id="connect" value="Connexion" /><br />
 
-                            <a href="none" id="pwdforgot">Mot de passe oublié ?</a>
+                            <a href="none" id="pwdforgot" onClick={this.gotoForgotPass} >Mot de passe oublié ?</a>
 
                             <div className="divInscription">
                                 <button type="button" id="inscription" onClick={this.gotoInscription}>Inscription</button>

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import './Parametre.css'
 
-const baseURL = "http://localhost:3001"
+const params = "/params";
 
 class Parametre extends Component{
 
@@ -24,6 +24,8 @@ class Parametre extends Component{
         this.handleChanges = this.handleChanges.bind(this)
         this.clearState = this.clearState.bind(this)
         this.handleNewInfos = this.handleNewInfos.bind(this)
+
+        this.API = this.props.API;
     }
 
     componentDidUpdate(){
@@ -66,11 +68,6 @@ class Parametre extends Component{
     }
 
     handleReset(event){
-        // this.setState({
-        //     mail: this.props.mail,
-        //     changeMail: false,
-        //     changeMdp: false,
-        //})
         this.clearState()
     }
 
@@ -92,8 +89,7 @@ class Parametre extends Component{
                 changeMdp: this.state.changeMdp,
             }
             this.clearState()
-            console.log(userModif)
-            fetch(baseURL + "/params", {
+            fetch(this.API + params, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -105,7 +101,6 @@ class Parametre extends Component{
                 alert(res.data.message)
                 if(res.status === 200)
                 {
-                    console.log("infos")
                     this.handleNewInfos(res.data.mail)
                 }
             })
@@ -128,7 +123,7 @@ class Parametre extends Component{
         <div className="parametre">
             <form id="formParams" method="post" onSubmit={this.handleSubmitParams}>
                 <h2>Paramètre</h2>
-                <input className="inputParam" type="email" id="mail" name="mail" value={this.state.newMail} onChange={this.handleMailChange}
+                <input className="inputParam" type="email" id="mail" name="mail" placeholder="e-mail" value={this.state.newMail} onChange={this.handleMailChange}
                 disabled= {!this.state.changeMail} required />
                 <br/>
                 <input className="bouton_modifier" id="modifMail" type="button" onClick={this.handleModifMail} value="Modifier"/>
@@ -136,10 +131,10 @@ class Parametre extends Component{
                 <input className="bouton_modifier" id="modifMdp" type="button" onClick={this.handleModifPass} value="Modifier mot de passe"/>
                 <br/>
                 <input className="inputParamPass" type="password" id="newMdp" name="newMdp" placeholder="Nouveau mot de passe" 
-                disabled= {!this.state.changeMdp} onChange={this.handleChanges}/>
+                disabled= {!this.state.changeMdp} required={this.state.changeMdp} value={this.state.newMdp} onChange={this.handleChanges}/>
                 <br/>
                 <input className="inputParamPass" type="password" name="confirmNewMdp" placeholder="Confirmez mot de passe"
-                disabled= {!this.state.changeMdp} onChange={this.handleChanges}/>
+                disabled= {!this.state.changeMdp} required={this.state.changeMdp} value={this.state.confirmNewMdp} onChange={this.handleChanges}/>
                 <br/>
                 <input className="inputParamPass" type="password" id="mdp" name="mdp" placeholder="Mot de passe" required onChange={this.handleChanges} value={this.state.mdp}/>
                 <br />

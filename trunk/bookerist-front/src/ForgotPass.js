@@ -1,8 +1,10 @@
 import React, { useState } from "react"
 import "./ForgotPass.css"  
-const baseURL="http://localhost:3001/";
 
-const ForgotPass = ()=>{
+const ForgotPass = (props)=>{
+    const API = props.API;
+    const forgot_pass = "/forgotPass";
+
     const [mail, setMail] = useState('');
 
     function saveChanges(event){
@@ -11,13 +13,18 @@ const ForgotPass = ()=>{
 
     function handleForgetPass(event){
         event.preventDefault()
-        fetch(baseURL+'/forgotPass',{ 
+        fetch(API + forgot_pass,{ 
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(mail)
+            body: JSON.stringify({mail})
         })
+        .then(res => res.json())
+        .then(res => {
+            alert(res.message)
+        })
+        .catch(error => console.log(error))
     }
 
     return(

@@ -3,7 +3,8 @@ import './Contact.css';
 import './Button.css';
 
 export default function Contact(props){
-    const baseURL = "http://localhost:3001";
+    const contact = "/contact";
+    const API = props.API;
     const max = {
         objet: 70,
         message: 2000,
@@ -54,7 +55,7 @@ export default function Contact(props){
                 message: state.message,
             }
 
-            fetch(baseURL + "/contact", {
+            fetch(API + contact, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(contactMessage),
