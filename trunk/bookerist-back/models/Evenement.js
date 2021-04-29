@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const evenementSchema = mongoose.Schema({
     user_mail: { type: String, required: true },
-    users_invited: {type: Array, required: true },
+    users_invited: {type: Array, required: false },
     allDay: {type: Boolean, required: true },
     dateStart: { type: String, required: true },
     dateEnd: { type: String, required: true },

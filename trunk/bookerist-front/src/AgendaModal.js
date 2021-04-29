@@ -13,7 +13,7 @@ export default class AgendaModal extends Component {
         //Définission de l'état, par défaut le eventType sera disponibilité
         this.state = {
             editable: this.props.editable,
-            eventType: this.props.eventType && this.props.eventType !== '' ? this.props.eventType : "dispo",
+            eventType: this.props.eventType && this.props.eventType !== '' ? this.props.eventType : "evenement",
             eventId: this.props.eventId && this.props.eventId !== '' ? this.props.eventId : '',
             allDay: this.props.allDay ? this.props.allDay : false,
             startDate: '',
@@ -27,7 +27,9 @@ export default class AgendaModal extends Component {
             mail: this.props.mail,
             other_users: [],
             users_invited: this.props.modifier ? this.props.users_invited : [],
-            modifier: this.props.modifier
+            modifier: this.props.modifier,
+
+            invitesVisible: false,
         }
         this.API = this.props.API;
     }
@@ -69,7 +71,7 @@ export default class AgendaModal extends Component {
 
     clearState(){
         this.setState({
-            eventType: this.props.eventType !== '' ? this.props.eventType : "dispo",
+            eventType: this.props.eventType !== '' ? this.props.eventType : "evenement",
             allDay: false,
             startDate: '',
             startTime: '',
@@ -117,7 +119,7 @@ export default class AgendaModal extends Component {
 
     handleReset = (e) => {
         this.setState({
-            eventType: "dispo",
+            eventType: "evenement",
             allDay: false,
             startDate: '',
             startTime: '',
@@ -209,6 +211,10 @@ export default class AgendaModal extends Component {
         
     }
 
+    showInvites = () => {
+        this.setState({ invitesVisible: true });
+    }
+
     render(){
         const headerTxt = this.getHeaderTxt();
         const eventType = this.state.eventType ? this.state.eventType : "dispo";
@@ -226,13 +232,14 @@ export default class AgendaModal extends Component {
                         <div id="type">
                             <label htmlFor="eventType" id="labelType">Type : </label>
                             <select name="eventType" className="listeType" value={this.state.eventType} id={eventType} disabled={!this.state.editable} onChange={this.handleChanges}>
-                                <option value="dispo">disponibilité</option>
-                                <option value="rdv">rendez-vous</option>
+                                {/* <option value="dispo">disponibilité</option>
+                                <option value="rdv">rendez-vous</option> */}
                                 <option value="evenement">évènement</option>
                             </select>
                         </div>
                         {this.renderEventTypeContent()}
                         <footer>
+                            <button type="button" name="toggleInvites" className={this.state.invitesVisible ? "modalButton-invisible" : "modalButton"} id="toggleInvites" onClick={this.showInvites}>Ajouter des participants</button>
                             <button type="button" name="remove" className={this.state.modifier ? "modalButton" : "modalButton-invisible"} id="remove" onClick={this.handleRemove}>Supprimer</button>
                             <input type="reset" name="reset" className="modalButton" value="Réinitialiser" disabled={!this.state.editable} onClick={this.handleReset}/>
                             <button type="submit" name="save" className="modalButton" id="save" disabled={!this.state.editable}>Sauvegarder</button>
@@ -378,11 +385,13 @@ export default class AgendaModal extends Component {
         }
         else if (this.state.eventType === "evenement")
         {
+            let contentClass = this.state.invitesVisible ? "tableEventTypeContent_evenement--visible" : "tableEventTypeContent_evenement--invisible";
+
             content = (
                 <div className="eventTypeContent">
                     {this.renderEventObjAndDescription()}
                     {this.renderEventDate()}
-                    <table className="tableEventTypeContent_evenement">
+                    <table className={contentClass}>
                         <tbody>
                             <tr className="searchInvites">
                                 <td>
@@ -401,7 +410,6 @@ export default class AgendaModal extends Component {
                                     <button type="button" name="addButtonInvite" className="addButton" id="addButtonInvite"
                                     onClick={this.handleAddInvite}
                                     />
-                                    {/* <input type="search" /> */}
                                 </td>
                             </tr>
                             <tr>

@@ -49,21 +49,27 @@ div.eventTypeContent
 {
     text-align: center;
 }
-.tableEventDate, .tableEventTypeContent_evenement, .table_Obj_description
+.tableEventDate,
+.tableEventTypeContent_evenement--visible,
+.table_Obj_description
 {
     margin: 25px auto;
 }
-.tableEventDate td, .tableEventTypeContent_evenement td, .table_Obj_description td
+.tableEventDate td,
+.tableEventTypeContent_evenement--visible td,
+.table_Obj_description td
 {
     padding: 5px;
 
 }
-.tableEventDate td:nth-child(n), .tableEventTypeContent_evenement td:nth-child(n),
+.tableEventDate td:nth-child(n),
+.tableEventTypeContent_evenement--visible td:nth-child(n),
 .table_Obj_description td:nth-child(n)
 {
     text-align: right;
 }
-.tableEventDate td:nth-child(2n), .tableEventTypeContent_evenement td:nth-child(2n),
+.tableEventDate td:nth-child(2n),
+.tableEventTypeContent_evenement--visible td:nth-child(2n),
 .table_Obj_description td:nth-child(2n)
 {
     text-align: left;
@@ -78,23 +84,11 @@ div.eventTypeContent
     height: 8em;
     width: 101%;
 }
-.tableEventTypeContent_evenement
+.tableEventTypeContent_evenement--invisible
 {
+    display: none;
+}
 
-}
-.tableEventTypeContent_evenement td.liste_invites
-{
-    text-align: center;
-}
-.tableEventTypeContent_evenement td#liste_invites_label
-{
-    padding-top: 20px;
-}
-textarea#liste_invites
-{
-    height: 10vh;
-    width: 50%;
-}
 #modal-content #type select
 {
     color: rgb(138, 74, 176);
@@ -141,13 +135,22 @@ textarea#liste_invites
 {
     width: 80%;
 }
-.tableEventTypeContent_evenement td#liste_invites_content
+.tableEventTypeContent_evenement--visible td#liste_invites_content
 {
     margin: auto;
     height: 20vh;
 }
+.tableEventTypeContent_evenement--visible td.liste_invites
+{
+    text-align: center;
+}
+.tableEventTypeContent_evenement--visible td#liste_invites_label
+{
+    padding-top: 20px;
+}
 textarea#liste_invites
 {
+    position: relative;
     width: 80%;
     resize: none;
     text-align: center;
@@ -181,6 +184,11 @@ textarea#liste_invites
 .modalButton[disabled="true"]
 {
     background-color: grey;
+}
+.modalButton#toggleInvites
+{
+    display: block;
+    margin: auto;
 }
 .required-field::after
 {
