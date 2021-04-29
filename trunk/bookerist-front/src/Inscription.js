@@ -16,9 +16,10 @@ class Inscription extends Component {
             mail: '',
             mail2: '',
             mdp: '',
-            mdp2: ''
+            mdp2: '',
+            consentChecked: false,
         }
-        
+
         this.API = this.props.API;
     }
 
@@ -44,6 +45,10 @@ class Inscription extends Component {
         this.setState({ nom: event.target.value.toUpperCase() });
     }
 
+    handleCheckboxChanges = (event) => {
+        this.setState({ consentChecked: event.target.checked });
+    }
+
     handleInscriptionFinished = () => {
         this.props.gotoMain();
     }
@@ -52,7 +57,7 @@ class Inscription extends Component {
     sendInscription = event => {
         event.preventDefault()
         //destsructuration pour + de lisibilite
-        const {nom, prenom, mail, mail2, mdp, mdp2} = this.state;
+        const {nom, prenom, mail, mail2, mdp, mdp2, consentChecked} = this.state;
 
         if (mail !== mail2){
             alert("Les deux mails ne correspondent pas.");
@@ -60,7 +65,10 @@ class Inscription extends Component {
         if (mdp !== mdp2){
             alert("Les deux mots de passe ne correspondent pas.");
         }
-        else if (mail === mail2 && mdp === mdp2){
+        if (!consentChecked){
+            alert("Vous devez accepter la collecte de vos données pour pouvoir vous inscrire.");
+        }
+        else if (mail === mail2 && mdp === mdp2 && consentChecked){
             let user = {
                 nom: nom,
                 prenom: prenom,
@@ -120,7 +128,14 @@ class Inscription extends Component {
                         <input type="password" id="confirmMdp" name="mdp2" placeholder="confirmer mot de passe" required
                         onChange={this.saveChanges} />
 
+                        <div id="divConsentement">                                
+                            <input type="checkbox" id="consent" name="consentement" value="consentement" onChange={this.handleCheckboxChanges} />
+                            <label htmlFor="consent" id="labelConsent">J'accepte que mes données soient collectées dans un but purement fonctionnel. Au cas où je souhaiterais les faire supprimer, je pourrai en faire la demande en passant par l'onglet "contact".</label>
+                        </div>
+
                         <input type="submit" id="goInscription" value="Je m'inscris !" />
+                        
+                        
 
                     </fieldset>
                 </form>

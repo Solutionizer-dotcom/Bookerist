@@ -82,7 +82,7 @@ app.post('/inscription',  async (req, res, next) => {
                 mdp: hashPassword
             });   
             user.save()
-            .then(() => res.status(201).json({ message: 'Utilisateur enregistré.' }))
+            .then(() => res.status(201).json({ message: 'Inscription effectuée avec succès.' }))
             .catch(error => res.status(400).json({ error }));
         }
     })

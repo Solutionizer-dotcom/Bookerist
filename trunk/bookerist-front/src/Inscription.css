@@ -1,7 +1,6 @@
 .Inscription
 {
     color: rgb(138, 74, 176);
-    /* background-color: rgba(138, 74, 176, 0.1); */
     padding-bottom: 100%;
 }
 .formInscription fieldset
@@ -9,8 +8,8 @@
     border: unset;
     box-shadow: 0px 0px 10px black;
     border-radius: 20px;
-    width: 600px;
-    height: 500px;
+    width: 60vw;
+    height: 60vh;
     margin: auto;
     background-color: white;
 }
@@ -18,8 +17,6 @@
 {
     font-size: 1.5em;
     margin: 20px auto 45px auto;
-    /* margin-left: auto;
-    margin-right: auto; */
 }
 .formInscription
 {
@@ -34,9 +31,23 @@
     border-radius: 5px;
     outline: 0;
 }
+div#divConsentement
+{
+    display: flex;
+    margin-top: 10%;
+    text-align: justify;
+}
+input#consent:hover
+{
+    cursor: pointer;
+}
+label#labelConsent:hover
+{
+    cursor: pointer;   
+}
 #goInscription
 {
-    margin-top: 100px;
+    margin-top: 10%;
     background-color: rgb(138, 74, 176);
     color: white;
     border-radius: 5px;
