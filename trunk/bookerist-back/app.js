@@ -269,14 +269,10 @@ app.post('/contact', (req, res, next) => {
                 allDay: e.allDay,
                 start: e.dateStart,
                 end: e.dateEnd,
-                color: e.color,
+                color: 'rgb(248,163,39)',
                 textColor: e.textColor,
             });
         })
-
-
-        
-
 
         dispos = await dispos.exec();
 

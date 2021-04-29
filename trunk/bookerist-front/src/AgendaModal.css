@@ -101,10 +101,14 @@ div.eventTypeContent
 {
     background-color: rgb(250, 254, 0);
 }
-#modal-content #type select#evenement
+#modal-content #type .listeType#evenement
 {
     background-color: rgb(177, 214, 153);
 
+}
+#modal-content #type .listeType--nonEditable#evenement
+{
+    background-color: rgb(248,163,39);
 }
 #modal-content span.close
 {
@@ -148,6 +152,10 @@ div.eventTypeContent
 {
     padding-top: 20px;
 }
+.searchBarInvites--invisible
+{
+    visibility: hidden;
+}
 textarea#liste_invites
 {
     position: relative;
@@ -177,7 +185,7 @@ textarea#liste_invites
 {
     box-shadow: 0px 0px 5px inset black;
 }
-.modalButton-invisible
+.modalButton--invisible
 {
     display: none;
 }

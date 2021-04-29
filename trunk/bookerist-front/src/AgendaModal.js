@@ -212,7 +212,7 @@ export default class AgendaModal extends Component {
     }
 
     showInvites = () => {
-        this.setState({ invitesVisible: true });
+        this.setState({ invitesVisible: !this.state.invitesVisible });
     }
 
     render(){
@@ -231,7 +231,7 @@ export default class AgendaModal extends Component {
                     <form id="formInfosEvent" onSubmit={this.handleSave}>
                         <div id="type">
                             <label htmlFor="eventType" id="labelType">Type : </label>
-                            <select name="eventType" className="listeType" value={this.state.eventType} id={eventType} disabled={!this.state.editable} onChange={this.handleChanges}>
+                            <select name="eventType" className={this.state.editable ? "listeType" : "listeType--nonEditable"} value={this.state.eventType} id={eventType} disabled={!this.state.editable} onChange={this.handleChanges}>
                                 {/* <option value="dispo">disponibilité</option>
                                 <option value="rdv">rendez-vous</option> */}
                                 <option value="evenement">évènement</option>
@@ -239,7 +239,9 @@ export default class AgendaModal extends Component {
                         </div>
                         {this.renderEventTypeContent()}
                         <footer>
-                            <button type="button" name="toggleInvites" className={this.state.invitesVisible ? "modalButton-invisible" : "modalButton"} id="toggleInvites" onClick={this.showInvites}>Ajouter des participants</button>
+                            <button type="button" name="toggleInvites" className={this.state.editable ? "modalButton" : "modalButton--invisible"} id="toggleInvites" onClick={this.showInvites} disabled={!this.state.editable}>
+                                {this.state.invitesVisible ? "Ne pas ajouter de participant" : "Ajouter des participants"}
+                            </button>
                             <button type="button" name="remove" className={this.state.modifier ? "modalButton" : "modalButton-invisible"} id="remove" onClick={this.handleRemove}>Supprimer</button>
                             <input type="reset" name="reset" className="modalButton" value="Réinitialiser" disabled={!this.state.editable} onClick={this.handleReset}/>
                             <button type="submit" name="save" className="modalButton" id="save" disabled={!this.state.editable}>Sauvegarder</button>
@@ -385,7 +387,9 @@ export default class AgendaModal extends Component {
         }
         else if (this.state.eventType === "evenement")
         {
-            let contentClass = this.state.invitesVisible ? "tableEventTypeContent_evenement--visible" : "tableEventTypeContent_evenement--invisible";
+            let contentClass = this.state.invitesVisible || !this.state.editable ? "tableEventTypeContent_evenement--visible" : "tableEventTypeContent_evenement--invisible";
+
+            let searchBarClass = this.state.editable ? "searchBarInvites--visible" : "searchBarInvites--invisible";
 
             content = (
                 <div className="eventTypeContent">
@@ -393,7 +397,7 @@ export default class AgendaModal extends Component {
                     {this.renderEventDate()}
                     <table className={contentClass}>
                         <tbody>
-                            <tr className="searchInvites">
+                            <tr className={searchBarClass}>
                                 <td>
                                     <label htmlFor="labelSearchInvites">Personnes à inviter à l'évènement</label>
                                 </td>
