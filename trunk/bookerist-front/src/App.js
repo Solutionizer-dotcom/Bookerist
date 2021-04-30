@@ -5,7 +5,6 @@ import Header from './Header';
 import HeaderLoggedIn from './HeaderLoggedIn';
 import Inscription from './Inscription';
 import React, { Component } from 'react';
-//import Agenda from './AccueilLoggedIn';
 import Contact from './Contact';
 import ForgotPass from './ForgotPass';
 // import Calendrier from './Calendrier';

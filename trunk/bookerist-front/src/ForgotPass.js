@@ -43,21 +43,4 @@ const ForgotPass = (props)=>{
     );
 
 }
-export default ForgotPass; 
-
-
-
-        
-  
-
-
-
-
-
-
-
-
-
-
-
- 
+export default ForgotPass;
