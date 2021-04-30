@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import './Accueil.css';
 import './Button.css';
-//import Calendrier from './Calendrier';
 
 const connect = "/connect";
 
@@ -56,7 +55,6 @@ class Accueil extends Component {
              if (res.status === 400)
                 alert(res.data.message);
             if (res.status === 200)
-                //console.log(res.data.name);
                 this.handleCanBeLogged(res.data.prenom, res.data.nom, res.data.mail);
         })
         .catch(err => {
@@ -86,10 +84,6 @@ class Accueil extends Component {
                             </div>
                         </form>
                     </div>
-
-                    {/* <div className="calendrier">
-                        <Calendrier />
-                    </div> */}
                 </div>
         );
     }
