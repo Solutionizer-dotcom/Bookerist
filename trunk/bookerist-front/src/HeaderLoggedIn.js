@@ -118,7 +118,7 @@ export default function HeaderLoggedIn(props) {
                     <a href='none' name="evenement" onClick={handleEventMenu}>Créer évènement</a>
                   </li>
                   <li>
-                    <a href='none' name="Manuel" onClick={handlePageMenu}>Manuel d'utilisation</a>
+                    <a href="https://github.com/bzalugas/Projet_S4/tree/master/trunk/bookerist-front/src/manuel_utilisation.pdf" download="Bookerist_manuel_utilisation.pdf" name="Manuel" >Manuel d'utilisation</a>
                   </li>
                   <li>
                     <a href='none' name="Contact" onClick={handlePageMenu}>Contact</a>
