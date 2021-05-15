@@ -128,7 +128,7 @@ export default function HeaderLoggedIn(props) {
                     <a href='none' name="evenement" onClick={handleEventMenu}>Créer évènement</a>
                   </li>
                   <li>
-                    <a href="https://github.com/Solutionizer-dotcom/Bookerist/tree/master/trunk/bookerist-front/src/manuel_utilisation.pdf" target="_blank" rel="noreferrer" download="Bookerist_manuel_utilisation.pdf" name="Manuel" >Manuel d'utilisation</a>
+                    <a href="https://github.com/Solutionizer-dotcom/Bookerist/tree/master/bookerist_manuel_utilisation.pdf" target="_blank" rel="noreferrer" download="Bookerist_manuel_utilisation.pdf" name="Manuel" >Manuel d'utilisation</a>
                   </li>
                   <li>
                     <a href='none' name="Contact" onClick={handlePageMenu}>Contact</a>
