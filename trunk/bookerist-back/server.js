@@ -1,6 +1,7 @@
 const http = require('http');
 const app = require('./app');
 
+//Fonction permettant de mettre la valeur du port toujours sous la même forme
 const normalizePort = val => {
   const port = parseInt(val, 10);
 
@@ -16,6 +17,7 @@ const normalizePort = val => {
 const port = normalizePort(process.env.PORT || '3001');
 app.set('port', port);
 
+//Fonction de gestion des erreurs lors du lancement du serveur
 const errorHandler = error => {
   if (error.syscall !== 'listen') {
     throw error;

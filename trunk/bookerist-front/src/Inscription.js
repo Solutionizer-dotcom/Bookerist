@@ -4,8 +4,10 @@ import reactDom from 'react-dom'
 import App from './App'
 import './Button.css'
 
+//route de l'API pour effectuer une inscription
 const inscription = "/inscription";
 
+//Composant affichant et gérant le page d'inscription
 class Inscription extends Component {
     constructor(props){
         super(props);
@@ -23,40 +25,57 @@ class Inscription extends Component {
         this.API = this.props.API;
     }
 
-    //fx flechée pour acceder au this
+    //Fonction appelée à chaque modification des champs d'inscription
+    //Permet de sauvegarder dans l'état local les valeurs des champs
+    //Paramètre : l'évènement javascript associé à l'appel de la fonction
     saveChanges = event => {
         const name = event.target.name;
         const value = event.target.value;
         this.setState({ [name]: value });
     }
 
+    //Fonction appelée lors de la modification du champ de mail
+    //Force l'écriture en minuscule du champ et sauvegarde la valeur dans l'état local
+    //Paramètre : l'évènement javascript associé à l'appel de la fonction
     handleMailUpdate = event => {
         //automatiquement mettre le mail en minuscules
         this.setState({ mail: event.target.value.toLowerCase() })
     }
 
+    //Fonction appelée lors de la modification du champ de prénom
+    //Force l'écriture de la première lettre en majuscule du champ et sauvegarde la valeur dans l'état local
+    //Paramètre : l'évènement javascript associé à l'appel de la fonction
     handleFirstNameUpdate = (event) => {
         let prenom = event.target.value;
         let prenomMaj = prenom.charAt(0).toUpperCase() + prenom.slice(1);
         this.setState({ prenom: prenomMaj });
     }
 
+    //Fonction appelée lors de la modification du champ de nom
+    //Force l'écriture en majuscule du champ et sauvegarde la valeur dans l'état local
+    //Paramètre : l'évènement javascript associé à l'appel de la fonction
     handleLastNameUpdate = (event) => {
         this.setState({ nom: event.target.value.toUpperCase() });
     }
 
+    //Fonction appelée lors de la modification de la checkbox de consentement
+    //Sauvegarde dans l'état local sa valeur
+    //Paramètre : l'évènement javascript associé à l'appel de la fonction
     handleCheckboxChanges = (event) => {
         this.setState({ consentChecked: event.target.checked });
     }
 
+    //Fonction appelée lorsque l'inscription est effectuée
+    //Renvoie sur la page d'accueil
     handleInscriptionFinished = () => {
         this.props.gotoMain();
     }
 
-    //fx flechée pour acceder au this
+    //Fonction appelée lors de l'envoi du formulaire d'inscription
+    //Paramètre : l'évènement javascript associé à l'appel de la fonction
     sendInscription = event => {
         event.preventDefault()
-        //destsructuration pour + de lisibilite
+        //destsructuration pour plus de lisibilité
         const {nom, prenom, mail, mail2, mdp, mdp2, consentChecked} = this.state;
 
         if (mail !== mail2){
@@ -87,19 +106,16 @@ class Inscription extends Component {
                 alert(res.data.message);
                 if (res.status === 201){
                     this.handleInscriptionFinished();
-                    reactDom.render(
-                        <App />,
-                        document.getElementById('root')
-                    );
                 }
             })
             .catch(err => {
-                // alert("Un problème est survenu lors de la connexion à la base de donnée. ")
+                alert("Un problème est survenu lors de la connexion à la base de donnée. ")
                 console.log(err);
             });
         }
     }
 
+    //Affichage de la page d'inscription
     render() {    
         return (
             <div className="Inscription">

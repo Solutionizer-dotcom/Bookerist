@@ -2,6 +2,7 @@ import './AccueilLoggedIn.css';
 import React, { Component } from 'react';
 import Agenda from './Agenda';
 
+//Composant affichant et gérant la page d'accueil une fois connecté
 class AccueilLoggedIn extends Component {
   constructor(props){
     super(props);
@@ -13,7 +14,8 @@ class AccueilLoggedIn extends Component {
     }
     this.API= this.props.API
   }
-  
+
+  //Chaque fois que le composant est mis à jour, les propriétés sont actualisées dans l'état local si elles ont changé
   componentDidUpdate(prevProps){
    const menuOpened = this.props.menuOpened;
    const profilOpened = this.props.profilOpened;
@@ -31,13 +33,15 @@ class AccueilLoggedIn extends Component {
    }
  }
 
+ //Fonction remettant l'état du type de l'évènement à sa valeur par défaut
  clearEventType = () => {
    this.setState({
      eventType: '',
    });
    this.props.clearEventType();
  }
-
+ 
+//rendu du visuel de l'accueil, i.e. l'agenda
   render() {
     const divClass = this.state.menuOpened ? 'menuOpened' : (this.state.profilOpened ? 'profilOpened' : '');
     

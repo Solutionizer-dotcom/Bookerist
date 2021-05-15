@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import './Contact.css';
 import './Button.css';
 
+//Composant permettant d'afficher et de gérer la page de contact
 export default function Contact(props){
     const contact = "/contact";
     const API = props.API;
@@ -9,6 +10,7 @@ export default function Contact(props){
         objet: 70,
         message: 2000,
     }
+    //utilisation du hook d'état, même utilisation que le state des classes mais pour les composants fonctionnels
     const [state, setState] = useState({
         objet: '',
         message: '',
@@ -16,6 +18,9 @@ export default function Contact(props){
         compteur_message: max.message,
     });
 
+    //Fonction sauvegardant les valeurs des champs à chaque modification
+    //Vérifie aussi que le texte ne dépasse la taille maximale prévue dans max
+    //Paramètre : l'évènement javascript associé à l'appel de la fonction 
     function handleChange(e){
         const champ = e.target.name;
         const value = e.target.value;
@@ -37,6 +42,9 @@ export default function Contact(props){
         }
     }
 
+    //Fonction appelée à l'envoi du formulaire de l'objet et du message
+    //Envoie la requête à l'API correspondant à l'envoie d'un mail
+    //Paramètre : l'évènement javascript associé à l'appel de la fonction
     function handleSubmitMessage(e){
         e.preventDefault();
 
@@ -71,6 +79,9 @@ export default function Contact(props){
         }
     }
     
+    //Fonction appelée lorsque le mail a été envoyé
+    //Remet tous les champs à leurs valeurs par défaut et 
+    //enregistre dans le stockage du navigateur que l'utilisateur a envoyé un message
     function handleFinishContact(){
         setState({
             objet: '',
@@ -82,6 +93,8 @@ export default function Contact(props){
         props.gotoMain();
     }
 
+    //Fonction appelée lorsque le formulaire est réinitialisé par le bouton reset
+    //Paramètre : l'évènement javascript associé à l'appel de la fonction
     function handleReset(e){
         e.preventDefault();
         setState({
@@ -91,6 +104,7 @@ export default function Contact(props){
             compteur_message: max.message,
         })
     }
+    //Affichage de la page de contact
     return(
         <div id="corps_contact">
             <h2 id="titre_contact">Contact</h2>

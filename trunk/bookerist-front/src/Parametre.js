@@ -1,8 +1,10 @@
 import React, { Component } from "react";
 import './Parametre.css'
 
+//Route de l'API pour enregistrer les changements de paramètres
 const params = "/params";
 
+//Composant affichant et gérant la page de paramètres de l'utilisateur
 class Parametre extends Component{
 
     constructor(props){
@@ -19,7 +21,6 @@ class Parametre extends Component{
         this.handleModifMail= this.handleModifMail.bind(this)
         this.handleModifPass= this.handleModifPass.bind(this)
         this.handleMailChange= this.handleMailChange.bind(this)
-        this.handleReset = this.handleReset.bind(this)
         this.handleSubmitParams = this.handleSubmitParams.bind(this)
         this.handleChanges = this.handleChanges.bind(this)
         this.clearState = this.clearState.bind(this)
@@ -28,6 +29,7 @@ class Parametre extends Component{
         this.API = this.props.API;
     }
 
+    //Chaque fois que le composant est mis à jour on récupère le mail des props s'il a changé
     componentDidUpdate(){
         if(this.props.mail !== this.state.mail){
             this.setState({
@@ -37,6 +39,7 @@ class Parametre extends Component{
         }
     }
 
+    //Fonction permettant de remettre l'état local à ses valeurs par défaut
     clearState(){
         this.setState({
             mail: this.props.mail,
@@ -49,34 +52,41 @@ class Parametre extends Component{
         })
     }
 
-    handleModifMail(event) {
+    //Fonction appelée au clic sur le bouton de modification du mail
+    //Indique dans l'état local que l'utilisateur souhaite modifier le mail
+    handleModifMail() {
         this.setState({
             changeMail: true,
         })
     }
 
-    handleModifPass(event){
+    //Fonction appelée au clic sur le bouton de modification du mot de passe
+    //Indique dans l'état local que l'utilisateur souhaite modifier le mot de passe
+    handleModifPass(){
         this.setState({
             changeMdp: true,
         })
     }
 
+    //Fonction appelée à chaque modification du champ de mail
+    //Sauvegarde le nouveau mail dans l'état local
+    //Paramètre : l'évènement javascript associé à l'appel de la fonction
     handleMailChange(event){
         this.setState({
             newMail: event.target.value.toLowerCase()
         })
     }
 
-    handleReset(event){
-        this.clearState()
-    }
-
-
+    //Fonction appelée lorsque les nouveaux paramètres ont été enregistrés
+    //Permet de faire remonter le nouveau mail au composant App pour les autres composants en ayant besoin
+    //Paramètre : la String du nouveau mail
     handleNewInfos(newMail){
         this.props.handleChangeParams(newMail)
     }
 
-
+    //Fonction appelée lors de l'envoi du formulaire de paramètres
+    //Envoie la requête contenant les nouvelles informations à l'API
+    //Paramètre : l'évènement javascript associé à l'appel de la fonction
     handleSubmitParams(event){
         event.preventDefault()
         if(this.state.newMdp === this.state.confirmNewMdp){
@@ -110,6 +120,9 @@ class Parametre extends Component{
         }
     }
 
+    //Fonction appelée à chaque modification des champs des paramètres
+    //Permet de contrôler les valeurs des champs, i.e. les enregistrer dans l'état local
+    //Paramètre : l'évènement javascript associé à l'appel de la fonction
     handleChanges(event){
         let name = event.target.name
         let value = event.target.value
@@ -118,6 +131,7 @@ class Parametre extends Component{
         })
     }
 
+    //Rendu des paramètres
     render() {       
         return(
         <div className="parametre">
@@ -138,7 +152,7 @@ class Parametre extends Component{
                 <br/>
                 <input className="inputParamPass" type="password" id="mdp" name="mdp" placeholder="Mot de passe" required onChange={this.handleChanges} value={this.state.mdp}/>
                 <br />
-                <input type="reset" className="bouton_modifier" id ="reset" value="Annuler" onClick={this.handleReset} />
+                <input type="reset" className="bouton_modifier" id ="reset" value="Annuler" onClick={this.clearState} />
                 <input className="bouton_modifier" id="save" type="submit" value="Sauvegarder"/>
             </form>
         </div>

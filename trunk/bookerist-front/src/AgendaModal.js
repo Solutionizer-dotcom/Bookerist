@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
 import './AgendaModal.css';
 import './Button.css';
-// import moment from 'moment';
 
+//route utilisé pour la requête à l'API de récupération des autres utilisateurs
 const users_get = "/users/get";
 
-//Composant permettant d'afficher le modal pour créer un évènement dans l'agenda
+//Composant permettant d'afficher le modal pour créer, modifier ou supprimer un évènement dans l'agenda
 export default class AgendaModal extends Component {
     constructor(props){
         super(props);
 
-        //Définission de l'état, par défaut le eventType sera disponibilité
+        //Définission de l'état, par défaut le eventType sera évènement
         this.state = {
             editable: this.props.editable,
             eventType: this.props.eventType && this.props.eventType !== '' ? this.props.eventType : "evenement",
@@ -34,9 +34,8 @@ export default class AgendaModal extends Component {
         this.API = this.props.API;
     }
 
-    componentDidMount() {
-    }
-
+    //Quand le composant est mis à jour, récupération des propriété d'évènement une seule fois
+    //Dans le cas d'un évènement ou d'un rendez-vous, récupération une seule fois des autres utilisateurs
     componentDidUpdate(){
         const listProps = ["startDate", "startTime", "endDate", "endTime", "objet", "description", "users_invited", "eventId", "allDay", "editable", "mail"];
         if (!this.state.getProps)
@@ -65,10 +64,9 @@ export default class AgendaModal extends Component {
             .catch(err => console.log(err));
             this.setState({ alreadyFetched: true });
         }
-        // let modal = document.getElementById("modal");
-        // this.state.openModal ? modal.style.display = "block" : modal.style.display = "none";
     }
 
+    //Fonction permettant de remettre l'état local à ses valeurs par défaut
     clearState(){
         this.setState({
             eventType: this.props.eventType !== '' ? this.props.eventType : "evenement",
@@ -83,8 +81,7 @@ export default class AgendaModal extends Component {
         })
     }
 
-    //On génère le texte pour le header du modal en fonction de l'objet à créer
-    //Fonction fléchée pour accéder au this
+    //Fonction générant le texte pour le header du modal en fonction du type d'évènement à créer
     getHeaderTxt = () => {
         const eventTxt = {
             dispo: "Créer une nouvelle disponibilité",
@@ -94,7 +91,8 @@ export default class AgendaModal extends Component {
         return eventTxt[this.state.eventType];
     }
 
-    //fonction fléchée pour accéder au this
+    //Fonction appelée à chaque changement des champs du menu afin d'enregistrer les valeurs dans l'état local
+    //Paramètre : l'évènement javascript associé à l'appel de la fonction
     handleChanges = (e) => {
         const name = e.target.name;
         const value = e.target.value;
@@ -102,9 +100,11 @@ export default class AgendaModal extends Component {
             [name]: value,
         });
     }
-    //fonction fléchée pour accéder au this
+
+    //Fonction appelée à chaque changement des checkbox du menu afin d'enregistrer les valeurs dans l'état local
+    //Sert uniquement pour les modifications de allDay mais permet de facilement ajouter d'autres checkbox au besoin
+    //Paramètre : l'évènement javascript associé à l'appel de la fonction
     handleCheckboxChanges = (e) => {
-        //pour l'instant seulement pour le allDay
         const name = e.target.name;
         const value = e.target.checked;
         if (value === true)
@@ -117,27 +117,16 @@ export default class AgendaModal extends Component {
         })
     }
 
-    handleReset = (e) => {
-        this.setState({
-            eventType: "evenement",
-            allDay: false,
-            startDate: '',
-            startTime: '',
-            endDate: '',
-            endTime: '',
-            other_users: [],
-            users_invited: [],
-        })
-    }
-
-    handleClose = (e) => {
-        // var modal = document.getElementById("modal");
-        // modal.style.display = "none";
+    //Fonction appelée lorsque le menu doit se fermer
+    //Appelle la fonction de fermeture de menu passée en paramètres du composant
+    handleClose = () => {
         this.props.handleCloseModal();
     }
     
-   
-
+    //Fonction appelée à l'envoi du formulaire d'informations de l'évènement ou à la suppression de l'évènement
+    //crée l'évènement avec les informations requises et appelle la fonction d'ajout ou de modification d'évènement
+    //passé en paramètres du composant
+    //Paramètre : l'évènement javascript associé à l'appel de la fonction
     handleSave = (e) => {
         if (e)
             e.preventDefault();
@@ -170,6 +159,9 @@ export default class AgendaModal extends Component {
         this.handleClose();
     }
 
+    //Fonction appelée à la suppression d'un évènement
+    //Si l'utilisateur est le créateur de l'évènement, il peut le supprimer
+    //Sinon, il annule seulement sa participation à celui-ci
     handleRemove = () => {
         if (this.state.editable === true)
         {
@@ -211,10 +203,12 @@ export default class AgendaModal extends Component {
         
     }
 
+    //Fonction permettant d'afficher ou non les champs d'invitation
     showInvites = () => {
         this.setState({ invitesVisible: !this.state.invitesVisible });
     }
 
+    //Rendu du menu de modification d'évènement avec l'affichage conditionnel en fonction du type d'évènement
     render(){
         const headerTxt = this.getHeaderTxt();
         const eventType = this.state.eventType ? this.state.eventType : "dispo";
@@ -243,7 +237,7 @@ export default class AgendaModal extends Component {
                                 {this.state.invitesVisible ? "Ne pas ajouter de participant" : "Ajouter des participants"}
                             </button>
                             <button type="button" name="remove" className={this.state.modifier ? "modalButton" : "modalButton--invisible"} id="remove" onClick={this.handleRemove}>Supprimer</button>
-                            <input type="reset" name="reset" className="modalButton" value="Réinitialiser" disabled={!this.state.editable} onClick={this.handleReset}/>
+                            <input type="reset" name="reset" className="modalButton" value="Réinitialiser" disabled={!this.state.editable} onClick={this.clearState}/>
                             <button type="submit" name="save" className="modalButton" id="save" disabled={!this.state.editable}>Sauvegarder</button>
                         </footer>
                     </form>
@@ -253,6 +247,7 @@ export default class AgendaModal extends Component {
         );
     };
 
+    //Fonction de rendu des champs de date de l'évènement
     renderEventDate = () => {
         return (
             <div id="div_date">
@@ -296,6 +291,7 @@ export default class AgendaModal extends Component {
         );      
     }
 
+    //Fonction de rendu des champs d'objet et de description de l'évènement
     renderEventObjAndDescription = () => {
         return (
             <div>
@@ -323,6 +319,7 @@ export default class AgendaModal extends Component {
         );
     }
 
+    //Fonction de génération de la liste des autres utilisateurs qu'il est possible d'inviter
     generateDatalist = () => {
         if (this.state.other_users.length > 0)
         {
@@ -335,7 +332,8 @@ export default class AgendaModal extends Component {
         return null;
     }
 
-     //arrow fct to bind 'this'
+    //Fonction appelée à l'ajout d'un utilisateur dans la liste des invités
+    //Si l'utilisateur n'est pas déjà invité, il est ajouté à la liste
     handleAddInvite = () => {
         let strInvite = document.getElementById('searchBarInvite').value;
         if (strInvite && strInvite !== '')
@@ -352,9 +350,11 @@ export default class AgendaModal extends Component {
 
     }
 
+    //Fonction pour générer la liste d'invités à afficher
+    //Permet de trier les invités par ordre alphabétique de nom
     generateListeInvites = () => {
         let liste = this.state.users_invited;
-        //on trie dans l'ordre alphabétique par NOM
+        //Tri dans l'ordre alphabétique par NOM
         //la fonction sort place el1 avant el2 si la foncion de tri renvoie un nb < 0,
         //place el2 avant el1 si la fonction de tri renvoie un nb > 0
         let listeSorted = liste.sort((user1, user2) => {
@@ -371,8 +371,8 @@ export default class AgendaModal extends Component {
         //on retourne le tableau sous forme de string en enlevant les virgules
         return listeSorted.toString().replaceAll(',', '');
     }
-    //fonction pour afficher les informations à remplir en fontion du type d'objet à créer
-    //fonction fléchée pour accéder au this
+
+    //fonction pour afficher les champs à remplir en fontion du type d'objet à créer
     renderEventTypeContent = () => {
         let content = null;
         //la variable content contiendra le contenu à afficher en fonction de la valeur de

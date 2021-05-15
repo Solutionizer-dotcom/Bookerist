@@ -1,16 +1,22 @@
 import React, { useState } from "react"
 import "./ForgotPass.css"  
 
+//Composant affichant et gérant la page de mot de passe oublié
 const ForgotPass = (props)=>{
     const API = props.API;
     const forgot_pass = "/forgotPass";
 
     const [mail, setMail] = useState('');
 
+    //Fonction appelée à chaque modification du champ de mail
+    //Permet de sauvegarder dans l'état la valeur du champ de mail
+    //Paramètre : l'évènement javascript associé à l'appel de la fonction
     function saveChanges(event){
         setMail(event.target.value.toLowerCase())
     }
 
+    //Fonction envoyant la requête à l'adresse de l'API correspondant au mot de passe oublié
+    //Paramètre : l'évènement javascript associé à l'appel de la fonction
     function handleForgetPass(event){
         event.preventDefault()
         fetch(API + forgot_pass,{ 
@@ -27,6 +33,7 @@ const ForgotPass = (props)=>{
         .catch(error => console.log(error))
     }
 
+    //Affichage de la page de mot de passe oublié
     return(
         <div className="forgotPass">
             <h2>Mot de passe oublié </h2>

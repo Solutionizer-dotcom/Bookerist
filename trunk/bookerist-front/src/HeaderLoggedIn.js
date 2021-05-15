@@ -3,15 +3,15 @@ import './Button.css';
 import logo from './img/logo.png';
 import React, { useEffect, useState } from 'react';
 
+//Composant affichant et gérant le header une fois connecté
 export default function HeaderLoggedIn(props) {
   const [state, setState] = useState({
     menuOpened: false,
     profilOpened: false,
   });
-  // const [eventType, setEventType] = useState("");
 
-  // const {handleMenus} = props.handleMenus();
-  //A chaque fois que le state est modifié et qu'un menu est ouvert, on vérifie si on clique en dehors du menu
+  //A chaque fois que le state est modifié et qu'un menu est ouvert, écoute d'un clic en dehors du menu
+  //Si un clic en dehors des menus est capté alors le menu est fermé
   useEffect(() => {
     function handleCloseMenus(){
       props.handleMenus({ menuOpened: false, profilOpened: false});
@@ -31,6 +31,8 @@ export default function HeaderLoggedIn(props) {
     }
   });
 
+  //Fonction permettant d'ouvrir ou fermer le profil
+  //Paramètre : l'évènement javascript associé à l'appel de la fonction
   function toggleProfil (event) {
     event.preventDefault();
     event.stopPropagation();
@@ -43,6 +45,8 @@ export default function HeaderLoggedIn(props) {
       });
   }
 
+  //Fonction permettant d'ouvrir ou fermer le menu
+  //Paramètre : l'évènement javascript associé à l'appel de la fonction
   function toggleMenu(event){
     event.preventDefault();
     event.stopPropagation();
@@ -55,15 +59,19 @@ export default function HeaderLoggedIn(props) {
     });
   }
 
+  //Fonction appelée au clic sur déconnexion
+  //Déconnecte l'utilisateur et supprime toutes les informations stockées dans le stockage local
   function handleDisconnect (e) {
     e.preventDefault();
     e.stopPropagation();
 
-    //on supprime les données sauvegardées en local de l'utilisateur puis on le déconnecte
+    //Suppression des données sauvegardées en local de l'utilisateur puis déconnexion
     localStorage.clear();
     props.disconnect();
   }
 
+  //Fonction permettant de retourner à l'accueil
+  //Paramètre : l'évènement javascript associé à l'appel de la fonction
   function handleGotoMain(e) {
     e.preventDefault();
     e.stopPropagation();
@@ -72,9 +80,11 @@ export default function HeaderLoggedIn(props) {
       profilOpened: false,
     });
     props.gotoMain();
-    
   }
 
+  //Fonction permettant d'aller à la page choisie depuis le menu
+  //Elle est automatisée pour renvoyer vers la page de même nom que l'attribut name de la balise depuis laquelle elle est appelée
+  //Paramètre : l'évènement javascript associé à l'appel de la fonction
   function handlePageMenu(e){
     e.preventDefault();
     e.stopPropagation();
@@ -87,18 +97,18 @@ export default function HeaderLoggedIn(props) {
     props.handlePage({ [pageName]: true });
   }
 
+  //Fonction appelée au clic sur ajouter évènement
+  //Permet de faire remonter le type d'évènement à créer au menu de création d'évènement
+  //dans le cas où plusieurs types d'évènements existent
+  //Paramètre : l'évènement javascript associé à l'appel de la fonction
   function handleEventMenu(e){
     e.preventDefault();
-    // setEventType(e.target.name);
-
     props.giveEventType({eventType: e.target.name});
   }
 
+  //Affichage du header une fois connecté
   return (
     <header className="headerLoggedIn">
-
-      
-
       <ul className="menu">
           <li id="liMenu">
             <a href='none' onClick={toggleMenu}>MENU</a>
@@ -118,7 +128,7 @@ export default function HeaderLoggedIn(props) {
                     <a href='none' name="evenement" onClick={handleEventMenu}>Créer évènement</a>
                   </li>
                   <li>
-                    <a href="https://github.com/Solutionizer-dotcom/Bookerist/tree/master/trunk/bookerist-front/src/manuel_utilisation.pdf" target="_blank" download="Bookerist_manuel_utilisation.pdf" name="Manuel" >Manuel d'utilisation</a>
+                    <a href="https://github.com/Solutionizer-dotcom/Bookerist/tree/master/trunk/bookerist-front/src/manuel_utilisation.pdf" target="_blank" rel="noreferrer" download="Bookerist_manuel_utilisation.pdf" name="Manuel" >Manuel d'utilisation</a>
                   </li>
                   <li>
                     <a href='none' name="Contact" onClick={handlePageMenu}>Contact</a>
