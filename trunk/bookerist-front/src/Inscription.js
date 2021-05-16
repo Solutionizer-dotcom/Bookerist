@@ -1,13 +1,11 @@
 import './Inscription.css'
 import React, { Component } from 'react'
-import reactDom from 'react-dom'
-import App from './App'
 import './Button.css'
 
 //route de l'API pour effectuer une inscription
 const inscription = "/inscription";
 
-//Composant affichant et gérant le page d'inscription
+//Composant affichant  et gérant le page d'inscription
 class Inscription extends Component {
     constructor(props){
         super(props);
@@ -71,7 +69,7 @@ class Inscription extends Component {
         this.props.gotoMain();
     }
 
-    //Fonction appelée lors de l'envoi du formulaire d'inscription
+    //Fonction appelée lors de l'envoi du formulaire d'inscription afin d'envoyer les informations à l'API
     //Paramètre : l'évènement javascript associé à l'appel de la fonction
     sendInscription = event => {
         event.preventDefault()

@@ -135,6 +135,7 @@ export default class AgendaModal extends Component {
         if (this.state.eventType === 'evenement')
         {
             event = {
+                editable: true,
                 id: this.state.eventId,
                 title: this.state.objet,
                 extendedProps: {
@@ -387,7 +388,7 @@ export default class AgendaModal extends Component {
         }
         else if (this.state.eventType === "evenement")
         {
-            let contentClass = this.state.invitesVisible || !this.state.editable ? "tableEventTypeContent_evenement--visible" : "tableEventTypeContent_evenement--invisible";
+            let contentClass = this.state.invitesVisible || !this.state.editable || this.state.users_invited.length > 0 ? "tableEventTypeContent_evenement--visible" : "tableEventTypeContent_evenement--invisible";
 
             let searchBarClass = this.state.editable ? "searchBarInvites--visible" : "searchBarInvites--invisible";
 

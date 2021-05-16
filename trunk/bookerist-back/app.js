@@ -357,6 +357,9 @@ app.post("/params", async (req, res, next) =>
                         else 
                         {
                             await User.updateOne({ mail: req.body.mail }, { mail: req.body.newMail }).exec();
+                            await Evenement.updateMany({ user_mail: req.body.mail }, { user_mail: req.body.newMail }).exec();
+                            await Evenement.updateMany({ 'users_invited.mail': req.body.mail }, { "users_invited.$.mail": req.body.newMail }).exec();
+
                             changeMailSuccess = true;
                         }
                     }

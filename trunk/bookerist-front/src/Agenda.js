@@ -227,7 +227,7 @@ export default class Agenda extends Component {
         let event = removeInfo.event
         //Vérification de la possibilité de suppression par l'utilisateur
         //S'il n'a pas le droit, c'est qu'il était seulement invité à l'évènement
-        //Dans ce cas, l'évènement ne doit pas être supprimé de la base de données
+        //Dans ce cas,  l'évènement ne doit pas être supprimé de la base de données
         if (event.startEditable)
         {
             fetch(this.API + event_remove, {
